@@ -2,7 +2,7 @@
 name = "gdpr-rag"
 version = "0.1.0"
 description = "End-to-end RAG over the GDPR with a privacy-policy compliance checker"
-readme = "SPEC.md"
+readme = "README.md"
 license = "AGPL-3.0-or-later"
 requires-python = ">=3.11"
 dependencies = [

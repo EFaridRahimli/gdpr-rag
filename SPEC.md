@@ -115,4 +115,4 @@ Each ends in a demoable state.
 4. React UI: chat, source panel, history, settings (incl. API key). ✅
 5. Uploads + scope toggle. ✅
 6. Compliance check + its eval. ✅
-7. README, GIF, diagram.
+7. README, GIF, diagram. ✅
