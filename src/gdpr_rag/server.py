@@ -2,14 +2,15 @@
 
 import json
 from contextlib import asynccontextmanager
-from pathlib import Path
+from pathlib import Path, PurePath
+from typing import Literal
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile
 from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import answer, llm, store
+from . import answer, docs, llm, retrieve, store
 
 DB = Path("data/gdpr.db")
 WEB = Path(__file__).resolve().parents[2] / "web" / "dist"
@@ -39,6 +40,7 @@ def _sse(event: str, data) -> str:
 class Ask(BaseModel):
     question: str = Field(min_length=1, max_length=2000)
     chat_id: int | None = None
+    scope: Literal["all", "gdpr", "docs"] = "all"
 
 
 @app.post("/api/chat")
@@ -52,13 +54,14 @@ def chat(req: Ask) -> StreamingResponse:
             question = answer.standalone(history, req.question)
             chat_id = store.add_message(db, req.chat_id, "user", req.question)
             yield _sse("chat", {"id": chat_id, "question": question})
-            sources = answer.sources_for(db, question)
+            sources = answer.sources_for(db, question, req.scope)
             yield _sse("sources", sources)
             model = llm.setting("OPENROUTER_MODEL", llm.ANSWER_MODEL)
             text = ""
-            for delta in llm.stream(answer.messages_for(question, sources), model, temperature=0):
-                text += delta
-                yield _sse("token", delta)
+            if sources:  # e.g. "My documents" with nothing uploaded: no point asking the model
+                for delta in llm.stream(answer.messages_for(question, sources), model, temperature=0):
+                    text += delta
+                    yield _sse("token", delta)
             result = answer.finalize(text, sources)
             store.add_message(db, chat_id, "assistant", result["answer"], sources, result["citations"])
             yield _sse("done", result)
@@ -139,6 +142,65 @@ def put_settings(req: SettingsUpdate) -> dict:
             store.set_setting(db, "model", req.model.strip() or None)
             llm.use_model(req.model.strip() or None)
         return _settings_view(db)
+    finally:
+        db.close()
+
+
+@app.get("/api/documents")
+def list_documents() -> list[dict]:
+    db = _db()
+    try:
+        return [dict(r) for r in db.execute("select * from documents order by id desc")]
+    finally:
+        db.close()
+
+
+@app.post("/api/documents", status_code=201)
+def upload_document(file: UploadFile) -> dict:
+    """Parse, chunk and embed an upload; the text is sent to OpenRouter for embedding."""
+    name = PurePath(file.filename or "document").name[:120]
+    data = file.file.read(docs.MAX_BYTES + 1)  # one byte over the limit is enough to reject
+    try:
+        chunks = docs.chunk_markdown(docs.to_markdown(name, data), PurePath(name).stem)
+    except docs.UploadError as e:
+        raise HTTPException(422, str(e)) from None
+    if not chunks:
+        raise HTTPException(422, "No text found in this file.")
+    model = llm.setting("EMBED_MODEL", llm.EMBED_MODEL)
+    try:  # embed before writing anything, so a failed call leaves no half-stored document
+        vectors = llm.embed([retrieve.passage(c.label, c.heading, c.text) for c in chunks], model)
+    except Exception as e:  # noqa: BLE001 - report key/network/provider errors to the user
+        raise HTTPException(502, f"Embedding failed: {e}") from None
+    db = _db()
+    try:
+        with db:
+            doc_id = db.execute(
+                "insert into documents(name, size, chunks) values (?, ?, ?)",
+                (name, len(data), len(chunks)),
+            ).lastrowid
+        try:
+            store.set_vectors(db, model, store.replace_source(db, f"user:{doc_id}", chunks), vectors)
+        except Exception:
+            _delete_document(db, doc_id)
+            raise
+        return dict(db.execute("select * from documents where id = ?", (doc_id,)).fetchone())
+    finally:
+        db.close()
+
+
+def _delete_document(db, doc_id: int) -> None:
+    store.replace_source(db, f"user:{doc_id}", [])
+    with db:
+        db.execute("delete from documents where id = ?", (doc_id,))
+
+
+@app.delete("/api/documents/{doc_id}", status_code=204)
+def delete_document(doc_id: int) -> None:
+    db = _db()
+    try:
+        if db.execute("select 1 from documents where id = ?", (doc_id,)).fetchone() is None:
+            raise HTTPException(404, "document not found")
+        _delete_document(db, doc_id)
     finally:
         db.close()
 

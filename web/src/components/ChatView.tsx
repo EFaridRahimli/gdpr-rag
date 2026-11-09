@@ -1,9 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowUp } from 'lucide-react'
-import { api, streamChat, type Message, type Source } from '@/api'
+import { api, streamChat, type Message, type Scope, type Source } from '@/api'
 import { AnswerText } from '@/components/AnswerText'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+
+const SCOPES: [Scope, string][] = [
+  ['all', 'GDPR + my documents'],
+  ['gdpr', 'GDPR'],
+  ['docs', 'My documents'],
+]
 
 const EXAMPLES = [
   'Can a company keep my data forever?',
@@ -13,10 +20,14 @@ const EXAMPLES = [
 
 export function ChatView({
   chatId,
+  scope,
+  onScope,
   onChatSaved,
   onCite,
 }: {
   chatId: number | null
+  scope: Scope
+  onScope: (scope: Scope) => void
   onChatSaved: (id: number) => void
   onCite: (source: Source) => void
 }) {
@@ -53,7 +64,7 @@ export function ChatView({
     const update = (fn: (m: Message) => Message) =>
       setMessages((m) => [...m.slice(0, -1), fn(m[m.length - 1])])
     try {
-      await streamChat(question, chatId, {
+      await streamChat(question, chatId, scope, {
         chat: (id) => {
           justCreated.current = id
           onChatSaved(id)
@@ -79,7 +90,7 @@ export function ChatView({
             <div className="pt-[12vh]">
               <h1 className="text-2xl font-medium tracking-tight">Ask about the GDPR</h1>
               <p className="mt-2 text-muted-foreground">
-                Answers come only from the regulation's text, with every claim linked to its article.
+                Answers come only from the regulation's text and your documents, with every claim linked to its source.
               </p>
               <div className="mt-8 flex flex-col items-start gap-1">
                 {EXAMPLES.map((q) => (
@@ -110,7 +121,28 @@ export function ChatView({
           send(input)
         }}
       >
-        <div className="mx-auto flex w-full max-w-2xl items-end gap-2 px-6 pt-4">
+        <div className="mx-auto w-full max-w-2xl px-6 pt-3">
+          <ToggleGroup
+            type="single"
+            value={scope}
+            onValueChange={(v) => v && onScope(v as Scope)}
+            aria-label="Search in"
+            spacing={0}
+            className="border"
+          >
+            {SCOPES.map(([value, label]) => (
+              <ToggleGroupItem
+                key={value}
+                value={value}
+                size="sm"
+                className="px-3 text-xs font-normal text-muted-foreground data-[state=on]:bg-foreground data-[state=on]:text-background"
+              >
+                {label}
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
+        </div>
+        <div className="mx-auto flex w-full max-w-2xl items-end gap-2 px-6 pt-3">
           <Textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -152,7 +184,7 @@ function MessageView({ message: m, onCite }: { message: Message; onCite: (s: Sou
   if (waiting)
     return (
       <p className="text-muted-foreground" role="status">
-        {sources.length ? 'Writing the answer…' : 'Searching the GDPR…'}
+        {sources.length ? 'Writing the answer…' : 'Searching…'}
       </p>
     )
   const cited = (m.citations ?? []).map((cid) => sources.find((s) => s.cid === cid)).filter((s) => s !== undefined)

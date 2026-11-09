@@ -4,9 +4,11 @@ import re
 
 from . import llm, retrieve, store
 
-NOT_FOUND = "I couldn't find this in the GDPR sources."
+NOT_FOUND = "I couldn't find this in the selected sources."
 
-SYSTEM = """You answer questions about the GDPR using only the numbered sources provided.
+SYSTEM = """You answer questions about the GDPR and the user's own documents using only the
+numbered sources provided. Sources are GDPR articles and recitals, or passages from the user's
+documents (their label names the document).
 - Every sentence must be directly supported by the source it cites, e.g. [c2]; several are fine: [c1][c3].
 - Never cite a tag that is not in the list, and never use outside knowledge.
 - Do not add examples, lists, numbers, exceptions or conclusions that the sources do not state.
@@ -19,8 +21,10 @@ SYSTEM = """You answer questions about the GDPR using only the numbered sources 
 - Plain English, concise, short paragraphs. No disclaimers (the app shows one)."""
 
 
-def sources_for(db, question: str, k: int = 6) -> list[dict]:
-    ids = retrieve.search(db, question, k=k, embed_model=llm.setting("EMBED_MODEL", llm.EMBED_MODEL))
+def sources_for(db, question: str, scope: str = "all", k: int = 6) -> list[dict]:
+    ids = retrieve.search(
+        db, question, k=k, embed_model=llm.setting("EMBED_MODEL", llm.EMBED_MODEL), scope=scope
+    )
     rows = store.get(db, ids)
     return [
         {"cid": f"c{n}", "id": i, "source": rows[i]["source"], "label": rows[i]["label"],
@@ -39,6 +43,8 @@ def messages_for(question: str, sources: list[dict]) -> list[dict]:
 
 def finalize(text: str, sources: list[dict]) -> dict:
     """Drop citations to unknown tags; an answer with no valid citation counts as not found."""
+    if not sources:
+        return {"answer": NOT_FOUND, "citations": [], "found": False}
     valid = {s["cid"] for s in sources}
     cleaned = re.sub(r"\[(c\d+)\]", lambda m: m[0] if m[1] in valid else "", text)
     cleaned = re.sub(r"[ \t]+([.,;:])", r"\1", cleaned).strip()  # tidy " ." left by removed tags

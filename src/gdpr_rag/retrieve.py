@@ -78,14 +78,19 @@ def _local_rerank(db, query: str, ids: list[int], k: int) -> list[int]:
 
 def search(
     db, query: str, mode: str = DEFAULT_MODE, k: int = 6, embed_model: str = llm.EMBED_MODEL,
-    candidates: int = 30,
+    candidates: int = 30, scope: str = "all",
 ) -> list[int]:
     if mode == "bm25":
-        return store.bm25(db, query, k)
+        return store.bm25(db, query, k, scope)
     vec = query_vectors([query], embed_model)[0]
     if mode == "vector":
-        return store.knn(db, embed_model, vec, k)
-    fused = rrf([store.bm25(db, query, candidates), store.knn(db, embed_model, vec, candidates)])
+        return store.knn(db, embed_model, vec, k, scope)
+    fused = rrf([
+        store.bm25(db, query, candidates, scope),
+        store.knn(db, embed_model, vec, candidates, scope),
+    ])
+    if not fused:
+        return []
     if mode == "hybrid":
         return fused[:k]
     if mode == "llm-rerank":

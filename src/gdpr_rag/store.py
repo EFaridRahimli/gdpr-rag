@@ -19,7 +19,13 @@ create table if not exists messages(
   id integer primary key, chat_id integer not null references chats(id) on delete cascade,
   role text not null, content text not null, sources text, citations text,
   created_at text default current_timestamp);
+create table if not exists documents(
+  id integer primary key, name text not null, size integer not null, chunks integer not null,
+  created_at text default current_timestamp);
 """
+
+# chat scope -> SQL filter on chunks c; user documents are stored as source "user:<document id>"
+SCOPES = {"all": None, "gdpr": "c.source = 'gdpr'", "docs": "c.source like 'user:%'"}
 
 
 def connect(path: Path) -> sqlite3.Connection:
@@ -77,22 +83,34 @@ def set_vectors(db: sqlite3.Connection, model: str, ids: list[int], vectors) -> 
         )
 
 
-def bm25(db: sqlite3.Connection, query: str, k: int) -> list[int]:
+def bm25(db: sqlite3.Connection, query: str, k: int, scope: str = "all") -> list[int]:
     # quote every word so user punctuation can't break FTS5 query syntax
     words = re.findall(r"\w+", query.lower())
     if not words:
         return []
     match = " OR ".join(f'"{w}"' for w in words)
-    sql = "select rowid from chunks_fts where chunks_fts match ? order by bm25(chunks_fts) limit ?"
+    where = f"and {SCOPES[scope]}" if SCOPES[scope] else ""
+    sql = (
+        "select chunks_fts.rowid from chunks_fts join chunks c on c.id = chunks_fts.rowid "
+        f"where chunks_fts match ? {where} order by bm25(chunks_fts) limit ?"
+    )
     return [r[0] for r in db.execute(sql, (match, k))]
 
 
-def knn(db: sqlite3.Connection, model: str, vector, k: int) -> list[int]:
+def knn(db: sqlite3.Connection, model: str, vector, k: int, scope: str = "all") -> list[int]:
     t = vec_table(model)
     if t not in _vec_tables(db):
         raise RuntimeError(f"no vectors for {model}: run `gdpr-rag ingest --embed-model {model}`")
-    sql = f"select rowid from {t} where embedding match ? and k = ? order by distance"
-    return [r[0] for r in db.execute(sql, (sqlite_vec.serialize_float32(vector), k))]
+    blob = sqlite_vec.serialize_float32(vector)
+    if not SCOPES[scope]:
+        sql = f"select rowid from {t} where embedding match ? and k = ? order by distance"
+        return [r[0] for r in db.execute(sql, (blob, k))]
+    # filtered: exact scan of the allowed rows, same L2 metric as the index
+    sql = (
+        f"select v.rowid from {t} v join chunks c on c.id = v.rowid where {SCOPES[scope]} "
+        "order by vec_distance_l2(v.embedding, ?) limit ?"
+    )
+    return [r[0] for r in db.execute(sql, (blob, k))]
 
 
 def get(db: sqlite3.Connection, ids: list[int]) -> dict[int, sqlite3.Row]:

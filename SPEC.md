@@ -112,6 +112,6 @@ Each ends in a demoable state.
 2. Golden set + retrieval bake-off + CI → verify: comparison table prints. ✅
 3. FastAPI chat: streaming + validated citations → verify: answer eval runs locally. ✅
 4. React UI: chat, source panel, history, settings (incl. API key). ✅
-5. Uploads + scope toggle.
+5. Uploads + scope toggle. ✅
 6. Compliance check + its eval.
 7. README, GIF, diagram.

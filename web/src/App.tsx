@@ -1,19 +1,22 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Menu, Plus, Trash2, X } from 'lucide-react'
-import { api, type ChatSummary, type Source } from '@/api'
+import { api, type ChatSummary, type Scope, type Source } from '@/api'
 import { ChatView } from '@/components/ChatView'
+import { DocumentsView } from '@/components/DocumentsView'
 import { EvalsView } from '@/components/EvalsView'
 import { SettingsView } from '@/components/SettingsView'
 import { SourcePanel } from '@/components/SourcePanel'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-type View = { kind: 'chat'; id: number | null } | { kind: 'settings' } | { kind: 'evals' }
+type View = { kind: 'chat'; id: number | null } | { kind: 'documents' } | { kind: 'settings' } | { kind: 'evals' }
+const PAGES = { documents: 'Documents', evals: 'Evaluation', settings: 'Settings' } as const
 
 export default function App() {
   const [view, setView] = useState<View>({ kind: 'chat', id: null })
   const [chats, setChats] = useState<ChatSummary[]>([])
   const [source, setSource] = useState<Source | null>(null)
+  const [scope, setScope] = useState<Scope>('all')
   const [navOpen, setNavOpen] = useState(false) // small screens only
 
   const refreshChats = useCallback(() => {
@@ -86,7 +89,7 @@ export default function App() {
           ))}
         </ul>
         <div className="space-y-1 border-t px-3 py-3 text-sm">
-          {(['evals', 'settings'] as const).map((kind) => (
+          {(Object.keys(PAGES) as (keyof typeof PAGES)[]).map((kind) => (
             <button
               key={kind}
               type="button"
@@ -97,7 +100,7 @@ export default function App() {
                 view.kind === kind ? 'border-foreground font-medium' : 'text-muted-foreground',
               )}
             >
-              {kind === 'evals' ? 'Evaluation' : 'Settings'}
+              {PAGES[kind]}
             </button>
           ))}
         </div>
@@ -107,6 +110,8 @@ export default function App() {
         {view.kind === 'chat' && (
           <ChatView
             chatId={view.id}
+            scope={scope}
+            onScope={setScope}
             onChatSaved={(id) => {
               setView({ kind: 'chat', id })
               refreshChats()
@@ -114,6 +119,7 @@ export default function App() {
             onCite={setSource}
           />
         )}
+        {view.kind === 'documents' && <DocumentsView />}
         {view.kind === 'settings' && <SettingsView />}
         {view.kind === 'evals' && <EvalsView />}
         {source && <SourcePanel source={source} onClose={closeSource} />}

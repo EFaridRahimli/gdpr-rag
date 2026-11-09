@@ -30,6 +30,8 @@ export type RetrievalRow = {
 export type AnswerSummary = { answered: number; target_cited: number; faithful: number; citations_ok: number }
 export type Evals = { retrieval: RetrievalRow[] | null; answers: AnswerSummary | null }
 export type Done = { answer: string; citations: string[]; found: boolean }
+export type Scope = 'all' | 'gdpr' | 'docs'
+export type Doc = { id: number; name: string; size: number; chunks: number; created_at: string }
 
 async function json<T>(r: Response): Promise<T> {
   if (!r.ok) {
@@ -51,6 +53,13 @@ export const api = {
       json<Settings>,
     ),
   evals: () => fetch('/api/evals').then(json<Evals>),
+  documents: () => fetch('/api/documents').then(json<Doc[]>),
+  uploadDocument: (file: File) => {
+    const body = new FormData()
+    body.append('file', file)
+    return fetch('/api/documents', { method: 'POST', body }).then(json<Doc>)
+  },
+  deleteDocument: (id: number) => fetch(`/api/documents/${id}`, { method: 'DELETE' }).then(json<void>),
 }
 
 type Handlers = {
@@ -62,11 +71,11 @@ type Handlers = {
 }
 
 /** POST a question and dispatch the server-sent events (EventSource can't POST). */
-export async function streamChat(question: string, chatId: number | null, on: Handlers) {
+export async function streamChat(question: string, chatId: number | null, scope: Scope, on: Handlers) {
   const r = await fetch('/api/chat', {
     method: 'POST',
     headers: JSON_HEADERS,
-    body: JSON.stringify({ question, chat_id: chatId }),
+    body: JSON.stringify({ question, chat_id: chatId, scope }),
   })
   if (!r.ok || !r.body) return on.error((await json<never>(r).catch((e: Error) => e)).message)
   const reader = r.body.pipeThrough(new TextDecoderStream()).getReader()

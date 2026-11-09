@@ -102,3 +102,81 @@ def test_server_settings_never_return_the_key_and_chats_cascade(tmp_path, monkey
         assert client.get(f"/api/chats/{chat_id}").status_code == 404
         assert db.execute("select count(*) from messages").fetchone()[0] == 0
     llm.use_api_key(None)
+
+
+def test_chunk_markdown_follows_headings_and_caps_size():
+    from gdpr_rag.docs import chunk_markdown
+
+    md = "Intro text.\n\n# Data we collect\n\nName and email.\n\n## Retention\n\n" + (
+        "We keep data. " * 30 + "\n\n"
+    ) * 3
+    chunks = chunk_markdown(md, "Acme policy", max_words=100)
+    assert chunks[0].label == "Acme policy" and chunks[0].text == "Intro text."
+    assert chunks[1].heading == "Acme policy > Data we collect"
+    retention = [c for c in chunks if c.label == "Acme policy: Retention"]
+    assert len(retention) == 3  # 3 paragraphs of 90 words, cap 100 -> one per chunk
+    assert retention[0].heading == "Acme policy > Data we collect > Retention"
+
+
+def test_to_markdown_rejects_bad_files_and_reads_docx_and_pdf():
+    import io
+
+    import docx
+    import pymupdf
+    import pytest
+
+    from gdpr_rag.docs import UploadError, to_markdown
+
+    with pytest.raises(UploadError, match="Unsupported"):
+        to_markdown("policy.exe", b"x")
+    blank = pymupdf.open()
+    blank.new_page()
+    with pytest.raises(UploadError, match="scanned"):
+        to_markdown("scan.pdf", blank.tobytes())
+
+    d = docx.Document()
+    d.add_heading("Retention", level=1)
+    d.add_paragraph("We keep data for two years.")
+    buf = io.BytesIO()
+    d.save(buf)
+    assert to_markdown("p.docx", buf.getvalue()).startswith("# Retention\n\nWe keep data")
+
+    pdf = pymupdf.open()
+    pdf.new_page().insert_text((72, 72), "We keep customer data for two years after closing. " * 3)
+    assert "two years" in to_markdown("p.pdf", pdf.tobytes())
+
+
+def test_scope_filters_keyword_and_vector_search(tmp_path):
+    from gdpr_rag import store
+    from gdpr_rag.gdpr import Chunk
+
+    db = store.connect(tmp_path / "t.db")
+    g = store.replace_source(db, "gdpr", [Chunk("Art. 5(1)", "a", "h", "storage limitation data")])
+    u = store.replace_source(db, "user:1", [Chunk("Policy", "s1", "h", "we keep data two years")])
+    store.set_vectors(db, "m/x", g + u, [[1.0, 0.0], [0.9, 0.1]])
+    assert set(store.bm25(db, "data", 5)) == {g[0], u[0]}
+    assert store.bm25(db, "data", 5, "docs") == u and store.bm25(db, "data", 5, "gdpr") == g
+    assert store.knn(db, "m/x", [1.0, 0.0], 5, "docs") == u
+    assert store.knn(db, "m/x", [0.0, 1.0], 5, "gdpr") == g
+
+
+def test_document_upload_list_delete(tmp_path, monkeypatch):
+    from fastapi.testclient import TestClient
+
+    from gdpr_rag import llm, server, store
+
+    monkeypatch.setattr(server, "DB", tmp_path / "app.db")
+    monkeypatch.setattr(llm, "embed", lambda texts, model: [[1.0, 0.0] for _ in texts])
+    with TestClient(server.app) as client:
+        bad = client.post("/api/documents", files={"file": ("x.exe", b"MZ")})
+        assert bad.status_code == 422 and "Unsupported" in bad.json()["detail"]
+        md = b"# Retention\n\nWe keep customer data for two years.\n\n# Rights\n\nEmail us."
+        doc = client.post("/api/documents", files={"file": ("Acme policy.md", md)}).json()
+        assert doc["name"] == "Acme policy.md" and doc["chunks"] == 2
+        assert [d["id"] for d in client.get("/api/documents").json()] == [doc["id"]]
+        db = store.connect(server.DB)
+        assert store.bm25(db, "customer", 5, "docs")
+        assert client.delete(f"/api/documents/{doc['id']}").status_code == 204
+        assert store.bm25(db, "customer", 5, "docs") == []
+        assert client.get("/api/documents").json() == []
+        assert client.delete(f"/api/documents/{doc['id']}").status_code == 404
