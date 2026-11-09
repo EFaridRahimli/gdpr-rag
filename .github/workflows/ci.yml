@@ -27,6 +27,7 @@ jobs:
       - run: uv sync
       - run: uv run ruff check .
       - run: uv run pytest -q
+      - run: uvx --from shellcheck-py shellcheck -s sh install.sh
       - name: retrieval eval
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}

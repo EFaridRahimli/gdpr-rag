@@ -57,7 +57,23 @@ Methodology and the full tables are in [Evaluation](#evaluation), including what
   </tr>
 </table>
 
-## Quickstart
+## Install
+
+### One line (macOS and Linux, nothing pre-installed)
+
+Open Terminal, paste this and follow the prompt for your
+[OpenRouter API key](https://openrouter.ai/keys):
+
+```bash
+curl -LsSf https://raw.githubusercontent.com/EFaridRahimli/gdpr-rag/main/install.sh | sh
+```
+
+It installs [uv](https://docs.astral.sh/uv/) (which brings its own Python), downloads the app to
+`~/gdpr-rag`, builds the GDPR index, opens the app in your browser, and on macOS puts a
+**Start GDPR RAG** launcher on the Desktop for next time. Running it again updates the app and keeps
+your chats, documents and key. Already have a copy? Run `sh install.sh` inside it instead.
+
+### Manually
 
 You need [uv](https://docs.astral.sh/uv/getting-started/installation/) and an
 [OpenRouter API key](https://openrouter.ai/keys). Node is not needed; the built frontend is in the repo.
