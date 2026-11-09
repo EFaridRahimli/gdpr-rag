@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Menu, Plus, Trash2, X } from 'lucide-react'
-import { api, type ChatSummary, type Scope, type Source } from '@/api'
+import { api, type ChatSummary, type Scope, type Settings, type Source } from '@/api'
 import { ChatView } from '@/components/ChatView'
 import { ComplianceView } from '@/components/ComplianceView'
 import { DocumentsView } from '@/components/DocumentsView'
@@ -21,6 +21,19 @@ export default function App() {
   const [chats, setChats] = useState<ChatSummary[]>([])
   const [source, setSource] = useState<Source | null>(null)
   const [scope, setScope] = useState<Scope>('all')
+  const [setup, setSetup] = useState<Settings | null>(null) // key + GDPR index status
+
+  const refreshSetup = useCallback(() => {
+    api.settings().then(setSetup).catch(() => setSetup(null))
+  }, [])
+  useEffect(() => {
+    refreshSetup()
+  }, [refreshSetup])
+  useEffect(() => {
+    if (setup?.index.status !== 'building') return
+    const t = setTimeout(refreshSetup, 3000) // poll until the background build finishes
+    return () => clearTimeout(t)
+  }, [setup, refreshSetup])
   const [navOpen, setNavOpen] = useState(false) // small screens only
 
   const refreshChats = useCallback(() => {
@@ -116,6 +129,8 @@ export default function App() {
         {view.kind === 'chat' && (
           <ChatView
             chatId={view.id}
+            setup={setup}
+            onOpenSettings={() => go({ kind: 'settings' })}
             scope={scope}
             onScope={setScope}
             onChatSaved={(id) => {
@@ -127,7 +142,7 @@ export default function App() {
         )}
         {view.kind === 'documents' && <DocumentsView onCheck={(doc) => go({ kind: 'compliance', doc })} />}
         {view.kind === 'compliance' && <ComplianceView doc={view.doc} onCite={setSource} />}
-        {view.kind === 'settings' && <SettingsView />}
+        {view.kind === 'settings' && <SettingsView settings={setup} onChange={setSetup} />}
         {view.kind === 'evals' && <EvalsView />}
         {source && <SourcePanel source={source} onClose={closeSource} />}
       </main>

@@ -1,6 +1,7 @@
 """FastAPI app: streaming, citation-checked answers, chat history, settings, eval results."""
 
 import json
+import threading
 from contextlib import asynccontextmanager
 from pathlib import Path, PurePath
 from typing import Literal
@@ -10,7 +11,7 @@ from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import answer, compliance, docs, llm, retrieve, store
+from . import answer, compliance, docs, ingest, llm, retrieve, store
 
 DB = Path("data/gdpr.db")
 WEB = Path(__file__).resolve().parents[2] / "web" / "dist"
@@ -21,12 +22,55 @@ def _db():
     return store.connect(DB)
 
 
+# GDPR index built in the background once a key exists, so first-run setup happens in the UI
+_index = {"building": False, "error": None}
+_index_lock = threading.Lock()
+
+
+def _embed_model() -> str:
+    return llm.setting("EMBED_MODEL", llm.EMBED_MODEL)
+
+
+def _index_status(db) -> dict:
+    if _index["building"]:
+        return {"status": "building", "error": None}
+    if ingest.is_ready(db, _embed_model()):
+        return {"status": "ready", "error": None}
+    return {"status": "error" if _index["error"] else "missing", "error": _index["error"]}
+
+
+def _start_indexing() -> None:
+    """Build the GDPR index in a thread unless it's ready or already building."""
+    with _index_lock:
+        db = _db()
+        try:
+            if _index["building"] or ingest.is_ready(db, _embed_model()):
+                return
+        finally:
+            db.close()
+        _index.update(building=True, error=None)
+
+    def run():
+        db = _db()
+        try:
+            ingest.build(db, [_embed_model()], log=lambda _msg: None)
+        except Exception as e:  # noqa: BLE001 - shown on the Settings page, user can retry
+            _index["error"] = str(e)
+        finally:
+            _index["building"] = False
+            db.close()
+
+    threading.Thread(target=run, daemon=True).start()
+
+
 @asynccontextmanager
 async def lifespan(_app):
     db = _db()
     llm.use_api_key(store.get_setting(db, "api_key"))  # a key saved in the UI wins over .env
     llm.use_model(store.get_setting(db, "model"))
     db.close()
+    if llm.setting("OPENROUTER_API_KEY", ""):
+        _start_indexing()
     yield
 
 
@@ -50,6 +94,10 @@ def chat(req: Ask) -> StreamingResponse:
     def events():
         db = _db()
         try:
+            if req.scope != "docs" and _index_status(db)["status"] != "ready":
+                yield _sse("error", {"message": "The GDPR index isn't ready yet. Add your OpenRouter "
+                                     "key in Settings; the index then builds in about a minute."})
+                return
             history = store.chat_messages(db, req.chat_id) if req.chat_id else []
             question = answer.standalone(history, req.question)
             chat_id = store.add_message(db, req.chat_id, "user", req.question)
@@ -71,6 +119,19 @@ def chat(req: Ask) -> StreamingResponse:
             db.close()
 
     return StreamingResponse(events(), media_type="text/event-stream")
+
+
+@app.post("/api/index")
+def start_index() -> dict:
+    """Retry building the GDPR index (e.g. after a network or key error)."""
+    if not llm.setting("OPENROUTER_API_KEY", ""):
+        raise HTTPException(400, "Add an OpenRouter key first")
+    _start_indexing()
+    db = _db()
+    try:
+        return _index_status(db)
+    finally:
+        db.close()
 
 
 @app.get("/api/chats")
@@ -111,6 +172,7 @@ def _settings_view(db) -> dict:
         "key_hint": f"{key[:6]}…{key[-4:]}" if key else None,  # never return the key itself
         "key_source": "settings" if ui_key else ("env" if key else None),
         "model": llm.setting("OPENROUTER_MODEL", llm.ANSWER_MODEL),
+        "index": _index_status(db),
     }
 
 
@@ -138,6 +200,8 @@ def put_settings(req: SettingsUpdate) -> dict:
                 raise HTTPException(400, "OpenRouter rejected this key")
             store.set_setting(db, "api_key", key or None)
             llm.use_api_key(key or None)
+            if key:
+                _start_indexing()
         if req.model is not None:
             store.set_setting(db, "model", req.model.strip() or None)
             llm.use_model(req.model.strip() or None)

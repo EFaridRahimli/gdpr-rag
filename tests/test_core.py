@@ -222,3 +222,35 @@ def test_compliance_endpoint_runs_stores_and_cascades(tmp_path, monkeypatch):
         assert client.get(f"/api/documents/{doc['id']}/compliance").json()["items"] == report["items"]
         client.delete(f"/api/documents/{doc['id']}")
         assert client.get(f"/api/documents/{doc['id']}/compliance").status_code == 404
+
+
+def test_first_run_index_builds_after_key_is_saved(tmp_path, monkeypatch):
+    import time
+
+    from fastapi.testclient import TestClient
+
+    from gdpr_rag import ingest, llm, server, store
+    from gdpr_rag.gdpr import Chunk
+
+    monkeypatch.setattr(server, "DB", tmp_path / "app.db")
+    monkeypatch.setattr(llm, "ENV_KEY", None)
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    monkeypatch.setattr(llm, "key_is_valid", lambda key: True)
+
+    def fake_build(db, models, log=print):
+        ids = store.replace_source(db, "gdpr", [Chunk("Art. 1", "a", "h", "text")])
+        store.set_vectors(db, models[0], ids, [[1.0, 0.0]])
+        return 1
+
+    monkeypatch.setattr(ingest, "build", fake_build)
+    with TestClient(server.app) as client:  # no key: nothing starts
+        assert client.get("/api/settings").json()["index"]["status"] == "missing"
+        chat = client.post("/api/chat", json={"question": "hi"}).text
+        assert "event: error" in chat and "Settings" in chat
+        client.put("/api/settings", json={"api_key": "sk-or-new"})
+        for _ in range(50):  # background thread
+            if client.get("/api/settings").json()["index"]["status"] == "ready":
+                break
+            time.sleep(0.05)
+        assert client.get("/api/settings").json()["index"]["status"] == "ready"
+    llm.use_api_key(None)

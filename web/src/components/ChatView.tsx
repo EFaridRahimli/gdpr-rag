@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowUp } from 'lucide-react'
-import { api, streamChat, type Message, type Scope, type Source } from '@/api'
+import { api, streamChat, type Message, type Scope, type Settings, type Source } from '@/api'
 import { AnswerText } from '@/components/AnswerText'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -20,12 +20,16 @@ const EXAMPLES = [
 
 export function ChatView({
   chatId,
+  setup,
+  onOpenSettings,
   scope,
   onScope,
   onChatSaved,
   onCite,
 }: {
   chatId: number | null
+  setup: Settings | null
+  onOpenSettings: () => void
   scope: Scope
   onScope: (scope: Scope) => void
   onChatSaved: (id: number) => void
@@ -92,6 +96,9 @@ export function ChatView({
               <p className="mt-2 text-muted-foreground">
                 Answers come only from the regulation's text and your documents, with every claim linked to its source.
               </p>
+              {setup && setup.index.status !== 'ready' ? (
+                <SetupNotice setup={setup} onOpenSettings={onOpenSettings} />
+              ) : (
               <div className="mt-8 flex flex-col items-start gap-1">
                 {EXAMPLES.map((q) => (
                   <button
@@ -104,6 +111,7 @@ export function ChatView({
                   </button>
                 ))}
               </div>
+              )}
             </div>
           )}
           <div className="space-y-8">
@@ -206,6 +214,25 @@ function MessageView({ message: m, onCite }: { message: Message; onCite: (s: Sou
           ))}
         </div>
       )}
+    </div>
+  )
+}
+
+function SetupNotice({ setup, onOpenSettings }: { setup: Settings; onOpenSettings: () => void }) {
+  if (setup.index.status === 'building')
+    return (
+      <p role="status" className="mt-8 border-l-2 border-foreground pl-4">
+        Building the GDPR index… this takes about a minute, then you can start asking.
+      </p>
+    )
+  return (
+    <div className="mt-8 space-y-3 border-l-2 border-foreground pl-4">
+      <p>
+        {setup.key_hint
+          ? 'The GDPR index needs to be built before you can ask questions.'
+          : 'One step left: add your OpenRouter API key. The GDPR index then builds automatically.'}
+      </p>
+      <Button onClick={onOpenSettings}>Open Settings</Button>
     </div>
   )
 }

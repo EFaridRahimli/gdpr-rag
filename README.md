@@ -61,17 +61,18 @@ Methodology and the full tables are in [Evaluation](#evaluation), including what
 
 ### One line (macOS and Linux, nothing pre-installed)
 
-Open Terminal, paste this and follow the prompt for your
-[OpenRouter API key](https://openrouter.ai/keys):
+Open Terminal and paste:
 
 ```bash
 curl -LsSf https://raw.githubusercontent.com/EFaridRahimli/gdpr-rag/main/install.sh | sh
 ```
 
 It installs [uv](https://docs.astral.sh/uv/) (which brings its own Python), downloads the app to
-`~/gdpr-rag`, builds the GDPR index, opens the app in your browser, and on macOS puts a
-**Start GDPR RAG** launcher on the Desktop for next time. Running it again updates the app and keeps
-your chats, documents and key. Already have a copy? Run `sh install.sh` inside it instead.
+`~/gdpr-rag`, opens it in your browser, and on macOS puts a **Start GDPR RAG** launcher on the
+Desktop for next time. Then paste your [OpenRouter API key](https://openrouter.ai/keys) on the
+Settings page: the GDPR index builds in the background in about a minute. Running the installer
+again updates the app and keeps your chats, documents and settings. Already have a copy? Run
+`sh install.sh` inside it instead.
 
 ### Manually
 
@@ -80,12 +81,13 @@ You need [uv](https://docs.astral.sh/uv/getting-started/installation/) and an
 
 ```bash
 git clone https://github.com/EFaridRahimli/gdpr-rag && cd gdpr-rag
-cp .env.example .env          # paste your key, or add it later on the Settings page
-uv run gdpr-rag ingest        # download, chunk and embed the GDPR (a minute or two, ~$0.03)
-uv run gdpr-rag serve         # http://localhost:8000
+uv run gdpr-rag serve         # http://localhost:8000, then paste your key in Settings
 ```
 
-`uv` installs the right Python version and every dependency on first run.
+`uv` installs the right Python version and every dependency on first run. Once a key is set, the
+app downloads, chunks and embeds the GDPR by itself (a minute or two, about $0.03). To use `.env`
+instead of the Settings page, `cp .env.example .env`, add the key, and optionally run
+`uv run gdpr-rag ingest` up front.
 A question costs roughly $0.002 with the default models (estimated from OpenRouter list prices).
 
 ## How it works

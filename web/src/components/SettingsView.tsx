@@ -1,25 +1,41 @@
 import { useEffect, useState } from 'react'
-import { api, type Settings } from '@/api'
+import { api, type IndexStatus, type Settings } from '@/api'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
-export function SettingsView() {
-  const [settings, setSettings] = useState<Settings | null>(null)
+const INDEX_TEXT: Record<IndexStatus['status'], string> = {
+  missing: 'The GDPR index builds automatically once a key is saved.',
+  building: 'Building the GDPR index… this takes about a minute.',
+  ready: 'GDPR index ready.',
+  error: 'Building the GDPR index failed.',
+}
+
+export function SettingsView({
+  settings,
+  onChange,
+}: {
+  settings: Settings | null
+  onChange: (settings: Settings) => void
+}) {
+  const setSettings = onChange
   const [key, setKey] = useState('')
   const [model, setModel] = useState('')
   const [status, setStatus] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    api
-      .settings()
-      .then((s) => {
-        setSettings(s)
-        setModel(s.model)
-      })
-      .catch((e: Error) => setStatus(`Could not load settings: ${e.message}`))
-  }, [])
+    if (settings && !model) setModel(settings.model)
+  }, [settings, model])
+
+  async function retryIndex() {
+    try {
+      const index = await api.buildIndex()
+      if (settings) onChange({ ...settings, index })
+    } catch (e) {
+      setStatus((e as Error).message)
+    }
+  }
 
   async function save(body: { api_key?: string; model?: string }, done: string) {
     setSaving(true)
@@ -55,6 +71,17 @@ export function SettingsView() {
           <p className="text-sm text-muted-foreground">
             {keyText} The key stays on this computer and is only sent to OpenRouter.
           </p>
+          {settings && (
+            <p role="status" className="text-sm">
+              {INDEX_TEXT[settings.index.status]}
+              {settings.index.error && <span className="text-muted-foreground"> {settings.index.error}</span>}
+              {settings.index.status === 'error' && (
+                <Button type="button" variant="link" className="h-auto px-1" onClick={retryIndex}>
+                  Try again
+                </Button>
+              )}
+            </p>
+          )}
           <div className="flex gap-2">
             <Input
               id="key"

@@ -1,10 +1,11 @@
 #!/bin/sh
-# gdpr-rag installer for macOS (and Linux): installs uv, the app, the GDPR index and a launcher.
+# gdpr-rag installer for macOS (and Linux): installs uv, the app and a launcher.
+# Your OpenRouter key goes in the app's Settings page; the GDPR index then builds itself.
 #
 #   From anywhere:            curl -LsSf https://raw.githubusercontent.com/EFaridRahimli/gdpr-rag/main/install.sh | sh
 #   Inside an unzipped copy:  sh install.sh
 #
-# Safe to run again: it updates the code and keeps your chats, documents and key.
+# Safe to run again: it updates the code and keeps your chats, documents and settings.
 set -eu
 
 ZIP_URL="${GDPR_RAG_ZIP:-https://github.com/EFaridRahimli/gdpr-rag/archive/refs/heads/main.zip}"
@@ -33,30 +34,7 @@ else
 fi
 cd "$APP"
 
-# 3. OpenRouter key, kept in .env (readable only by you)
-if ! grep -qs '^OPENROUTER_API_KEY=sk-or-' .env; then
-  KEY="${OPENROUTER_API_KEY:-}"
-  if [ -z "$KEY" ]; then
-    say "Paste your OpenRouter API key (get one at https://openrouter.ai/keys) and press Enter:"
-    read -r KEY </dev/tty
-  fi
-  case "$KEY" in
-    sk-or-*) ;;
-    *) echo "That doesn't look like an OpenRouter key (they start with sk-or-). Run the installer again."; exit 1 ;;
-  esac
-  { grep -sv '^OPENROUTER_API_KEY=' .env || true; printf 'OPENROUTER_API_KEY=%s\n' "$KEY"; } > .env.new
-  mv .env.new .env
-  chmod 600 .env
-fi
-
-# 4. Build the GDPR index once (the marker means a half-finished run is retried)
-if [ ! -f data/.ingested ]; then
-  say "Building the GDPR index. The first run also downloads Python, so allow a few minutes..."
-  "$UV" run gdpr-rag ingest
-  touch data/.ingested
-fi
-
-# 5. Launcher: double-click to start the app and open it in the browser
+# 3. Launcher: double-click to start the app and open it in the browser
 START="$APP/start.sh"
 cat >"$START" <<EOF
 #!/bin/sh
@@ -76,5 +54,6 @@ else
   say "Done. Next time, run: $START"
 fi
 
-say "Starting gdpr-rag at http://localhost:8000 (close this window to stop it)..."
+say "Starting gdpr-rag at http://localhost:8000. The first start downloads Python, so allow a few minutes."
+say "In the app, open Settings and paste your OpenRouter key (https://openrouter.ai/keys). Close this window to stop the app."
 exec "$START"

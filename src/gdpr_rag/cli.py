@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 
-from . import gdpr, llm, retrieve, store
+from . import llm, retrieve, store
 
 DATA = Path("data")
 
@@ -47,12 +47,9 @@ def main() -> None:
         if a.check:
             evals.check_baseline(results[0])
     elif a.cmd == "ingest":
-        chunks = gdpr.parse(gdpr.fetch(DATA / "raw" / "gdpr.xhtml"))
-        ids = store.replace_source(db, "gdpr", chunks)
-        texts = [retrieve.passage(c.label, c.heading, c.text) for c in chunks]
-        for model in a.embed_model or [llm.setting("EMBED_MODEL", llm.EMBED_MODEL)]:
-            store.set_vectors(db, model, ids, llm.embed(texts, model))
-            print(f"{model}: embedded {len(ids)} chunks")
+        from . import ingest
+
+        ingest.build(db, a.embed_model or [llm.setting("EMBED_MODEL", llm.EMBED_MODEL)])
     else:
         ids = retrieve.search(db, a.query, a.mode, a.k, a.embed_model)
         rows = store.get(db, ids)

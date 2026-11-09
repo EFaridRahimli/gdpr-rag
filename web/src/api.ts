@@ -19,7 +19,13 @@ export type Message = {
 
 export type ChatSummary = { id: number; title: string; created_at: string }
 export type Chat = ChatSummary & { messages: Message[] }
-export type Settings = { key_hint: string | null; key_source: 'settings' | 'env' | null; model: string }
+export type IndexStatus = { status: 'missing' | 'building' | 'ready' | 'error'; error: string | null }
+export type Settings = {
+  key_hint: string | null
+  key_source: 'settings' | 'env' | null
+  model: string
+  index: IndexStatus
+}
 export type RetrievalRow = {
   mode: string
   embed_model: string
@@ -66,6 +72,7 @@ export const api = {
       json<Settings>,
     ),
   evals: () => fetch('/api/evals').then(json<Evals>),
+  buildIndex: () => fetch('/api/index', { method: 'POST' }).then(json<IndexStatus>),
   documents: () => fetch('/api/documents').then(json<Doc[]>),
   uploadDocument: (file: File) => {
     const body = new FormData()
