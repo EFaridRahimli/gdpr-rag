@@ -75,3 +75,30 @@ def test_finalize_keeps_only_known_citations():
 
 def test_rrf_rewards_agreement():
     assert rrf([[1, 2], [2, 3]]) == [2, 1, 3]
+
+
+def test_server_settings_never_return_the_key_and_chats_cascade(tmp_path, monkeypatch):
+    from fastapi.testclient import TestClient
+
+    from gdpr_rag import llm, server, store
+
+    monkeypatch.setattr(server, "DB", tmp_path / "app.db")
+    monkeypatch.setattr(llm, "ENV_KEY", None)
+    monkeypatch.setattr(llm, "key_is_valid", lambda key: key.startswith("sk-or-good"))
+    key = "sk-or-good-" + "x" * 40 + "abcd"
+    with TestClient(server.app) as client:
+        assert client.put("/api/settings", json={"api_key": "sk-or-bad"}).status_code == 400
+        saved = client.put("/api/settings", json={"api_key": key}).json()
+        assert saved["key_hint"] == "sk-or-…abcd" and saved["key_source"] == "settings"
+        assert key not in client.get("/api/settings").text
+        cleared = client.put("/api/settings", json={"api_key": ""}).json()
+        assert cleared["key_source"] is None
+
+        db = store.connect(server.DB)
+        chat_id = store.add_message(db, None, "user", "Can I delete my data?")
+        store.add_message(db, chat_id, "assistant", "Yes [c1].", [{"cid": "c1"}], ["c1"])
+        assert client.get(f"/api/chats/{chat_id}").json()["messages"][1]["citations"] == ["c1"]
+        assert client.delete(f"/api/chats/{chat_id}").status_code == 204
+        assert client.get(f"/api/chats/{chat_id}").status_code == 404
+        assert db.execute("select count(*) from messages").fetchone()[0] == 0
+    llm.use_api_key(None)

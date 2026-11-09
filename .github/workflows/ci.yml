@@ -2,6 +2,23 @@ name: ci
 on: [push, pull_request]
 
 jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run build # typecheck + build
+      - name: committed web/dist is up to date (users run it without Node)
+        run: git diff --exit-code -- dist
+
   backend:
     runs-on: ubuntu-latest
     steps:

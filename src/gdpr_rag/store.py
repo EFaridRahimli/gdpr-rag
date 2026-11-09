@@ -1,5 +1,6 @@
 """One SQLite file: chunk rows, FTS5 keyword index, one sqlite-vec table per embedding model."""
 
+import json
 import re
 import sqlite3
 from pathlib import Path
@@ -11,6 +12,13 @@ create table if not exists chunks(
   id integer primary key, source text not null, label text not null,
   ref text, heading text, text text not null);
 create virtual table if not exists chunks_fts using fts5(label, heading, text);
+create table if not exists settings(key text primary key, value text not null);
+create table if not exists chats(
+  id integer primary key, title text not null, created_at text default current_timestamp);
+create table if not exists messages(
+  id integer primary key, chat_id integer not null references chats(id) on delete cascade,
+  role text not null, content text not null, sources text, citations text,
+  created_at text default current_timestamp);
 """
 
 
@@ -21,6 +29,7 @@ def connect(path: Path) -> sqlite3.Connection:
     db.enable_load_extension(True)
     sqlite_vec.load(db)
     db.enable_load_extension(False)
+    db.execute("pragma foreign_keys = on")
     db.executescript(SCHEMA)
     return db
 
@@ -91,3 +100,39 @@ def get(db: sqlite3.Connection, ids: list[int]) -> dict[int, sqlite3.Row]:
         return {}
     q = f"select * from chunks where id in ({','.join('?' * len(ids))})"
     return {r["id"]: r for r in db.execute(q, ids)}
+
+
+def get_setting(db: sqlite3.Connection, key: str) -> str | None:
+    row = db.execute("select value from settings where key = ?", (key,)).fetchone()
+    return row[0] if row else None
+
+
+def set_setting(db: sqlite3.Connection, key: str, value: str | None) -> None:
+    with db:
+        if value:
+            db.execute("insert or replace into settings(key, value) values (?, ?)", (key, value))
+        else:
+            db.execute("delete from settings where key = ?", (key,))
+
+
+def add_message(db, chat_id: int | None, role: str, content: str, sources=None, citations=None) -> int:
+    """Append a message, creating the chat (titled by its first message) when chat_id is None."""
+    with db:
+        if chat_id is None:
+            chat_id = db.execute("insert into chats(title) values (?)", (content[:80],)).lastrowid
+        db.execute(
+            "insert into messages(chat_id, role, content, sources, citations) values (?, ?, ?, ?, ?)",
+            (chat_id, role, content, json.dumps(sources) if sources is not None else None,
+             json.dumps(citations) if citations is not None else None),
+        )
+    return chat_id
+
+
+def chat_messages(db, chat_id: int) -> list[dict]:
+    rows = db.execute("select * from messages where chat_id = ? order by id", (chat_id,))
+    return [
+        {"role": r["role"], "content": r["content"],
+         "sources": json.loads(r["sources"]) if r["sources"] else None,
+         "citations": json.loads(r["citations"]) if r["citations"] else None}
+        for r in rows
+    ]

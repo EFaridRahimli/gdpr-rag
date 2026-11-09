@@ -12,6 +12,7 @@ EVAL_DIR = Path("eval")
 GOLDEN = EVAL_DIR / "golden.jsonl"
 BASELINE = EVAL_DIR / "baseline.json"
 WORKERS = 2  # stays under OpenRouter's new-account rate limit
+llm.PACE_RPM = int(llm.setting("OPENROUTER_RPM", "18"))  # batch calls: pace per model
 EMBED_MODELS = [
     "qwen/qwen3-embedding-8b",
     "mongodb/voyage-4-large",
