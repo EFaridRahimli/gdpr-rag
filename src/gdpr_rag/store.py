@@ -81,7 +81,7 @@ def bm25(db: sqlite3.Connection, query: str, k: int) -> list[int]:
 def knn(db: sqlite3.Connection, model: str, vector, k: int) -> list[int]:
     t = vec_table(model)
     if t not in _vec_tables(db):
-        raise SystemExit(f"no vectors for {model}: run `gdpr-rag ingest --embed-model {model}`")
+        raise RuntimeError(f"no vectors for {model}: run `gdpr-rag ingest --embed-model {model}`")
     sql = f"select rowid from {t} where embedding match ? and k = ? order by distance"
     return [r[0] for r in db.execute(sql, (sqlite_vec.serialize_float32(vector), k))]
 

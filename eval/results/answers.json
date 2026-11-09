@@ -1,0 +1,879 @@
+{
+  "summary": {
+    "answered": 1.0,
+    "target_cited": 0.98,
+    "faithful": 0.88,
+    "citations_ok": 0.94
+  },
+  "answers": [
+    {
+      "id": 1,
+      "question": "When our company's data protection officer does their job, do they have to pay more attention to the riskier ways we handle people's information?",
+      "target": "Art. 39(2)",
+      "answer": "Yes. The data protection officer must give due regard to the risk associated with processing operations, taking into account the nature, scope, context and purposes of the processing [c1].\n\nThe DPO's role in higher-risk processing is also set out in the rules on impact assessments. The DPO's tasks include advising on data protection impact assessments and monitoring how they are carried out [c2]. The controller must seek the DPO's advice when carrying out such an assessment, where a DPO has been appointed [c3]. Impact assessments are required where processing is likely to result in a high risk to people's rights and freedoms [c4].",
+      "citations": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches its cited source: c1 (due regard to risk, nature/scope/context/purposes), c2 (DPO advises on and monitors DPIAs), c3 (controller must seek DPO advice), c4 (DPIAs required for likely high-risk processing)."
+    },
+    {
+      "id": 2,
+      "question": "If a company has posted my personal information online and has to delete it because I asked, does it also have to tell other websites that copied or linked to it that I want it removed?",
+      "target": "Art. 17(2)",
+      "answer": "Yes, in most cases, but only to the extent it is reasonably possible. If a company has made your personal data public and must erase it, it must take reasonable steps to tell other controllers that are processing that data that you have asked for any links to, or copies or replications of it, to be erased [c1][c2]. This applies where the erasure is required under one of the grounds in Article 17(1), such as the data no longer being needed, you withdrawing consent, or you objecting to the processing [c3].\n\nThe company must consider available technology and the cost of implementation when deciding what steps are reasonable, including technical measures [c1]. The recital says it should also consider the means available to it [c2].\n\nThe company does not have to erase the data if further retention is lawful for a listed reason, such as exercising freedom of expression and information, complying with a legal obligation, or establishing or defending legal claims [c4].\n\nSeparately, the company must notify each recipient to whom the data was disclosed about the erasure, unless this proves impossible or involves disproportionate effort. It must also tell you who those recipients are if you ask [c6].",
+      "citations": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c6"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches its cited source: c1/c2 on reasonable steps to inform controllers, c3 on the erasure grounds, c4 on lawful retention exceptions, and c6 on Article 19 notification to recipients. The opening hedge 'in most cases' is mild framing and not a substantive unsupported claim."
+    },
+    {
+      "id": 3,
+      "question": "Where can I find an official list of countries that have been approved, or no longer approved, as having good enough data protection for sending personal information abroad?",
+      "target": "Art. 45(8)",
+      "answer": "The European Commission publishes the official list. It must be published in the Official Journal of the European Union and on the Commission's website. The list covers third countries, territories, specified sectors within a third country, and international organisations that the Commission has decided do, or no longer do, ensure an adequate level of protection [c1].\n\nTransfers to these places can take place without any further specific authorisation [c2].",
+      "citations": [
+        "c1",
+        "c2"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": false,
+      "citations_ok": false,
+      "reason": "The first paragraph is supported by c1, but the claim that transfers to \"these places\" need no further authorisation wrongly covers countries no longer found adequate, and c2 covers only those with a positive adequacy decision (c6 says transfers to the others are prohibited unless safeguards or derogations apply)."
+    },
+    {
+      "id": 4,
+      "question": "Can the European body that coordinates data protection regulators be told what to do by outside parties like governments or companies when it carries out its work?",
+      "target": "Art. 69(2)",
+      "answer": "No. The European Data Protection Board must act independently and may not seek or take instructions from anyone when carrying out its tasks or using its powers [c1][c2][c3]. There is one stated exception: requests from the Commission under point (b) of Article 70(1) and under Article 70(2) are not covered by this rule [c1].\n\nThe Board's secretariat works only under the instructions of the Board's Chair [c4][c5]. The Commission may take part in the Board's activities and meetings, but without voting rights [c6].",
+      "citations": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "c6"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches the sources: Art. 69(1)-(2) and Recital 139 on independence and no instructions, the Commission-request carve-out in Art. 69(2), the secretariat under the Chair's instructions (Art. 75(2), Recital 140), and the Commission's non-voting participation (Art. 68(5))."
+    },
+    {
+      "id": 5,
+      "question": "Does a small partnership or club that regularly earns money count as a business under the data protection rules, even if it isn't a formal company?",
+      "target": "Art. 4(18)",
+      "answer": "Yes, under the definition in the GDPR, a partnership or association can count as an enterprise even without a formal company structure. The definition covers any natural or legal person engaged in an economic activity, \"irrespective of its legal form, including partnerships or associations regularly engaged in an economic activity\" [c1].\n\nA club that regularly earns money may fall within that wording if its earnings come from an economic activity. The sources don't say how to decide whether a particular club's activity is economic, so that is a question of fact for each case.\n\nThe label matters mainly for the record-keeping exemption. Enterprises or organisations with fewer than 250 employees don't have to keep the usual records of processing activities, but only if none of three exceptions apply: the processing is likely to risk people's rights and freedoms, the processing is not occasional, or it includes special category data or criminal conviction data [c2]. The Regulation includes this exemption to reflect the situation of micro, small and medium-sized enterprises [c4].\n\nSeparately, a not-for-profit foundation, association or similar body with a political, philosophical, religious or trade union aim can process special category data in its legitimate activities under specific conditions. Those conditions include that the data relates only to members, former members, or people in regular contact with the body, and that the data is not disclosed outside the body without consent [c5].",
+      "citations": [
+        "c1",
+        "c2",
+        "c4",
+        "c5"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": false,
+      "citations_ok": true,
+      "reason": "The statement that the 'enterprise' label 'matters mainly for the record-keeping exemption' appears in none of the sources, and c2 applies the exemption to 'an enterprise or an organisation', so the label is not what decides it; every other claim and every citation is supported."
+    },
+    {
+      "id": 6,
+      "question": "If I agree to let a company use my personal details, can I change my mind later, and should stopping be just as simple as signing up?",
+      "target": "Art. 7(3)",
+      "answer": "Yes. You have the right to withdraw your consent at any time [c1]. Withdrawing does not make the earlier processing unlawful. It only stops the processing from that point on [c1].\n\nStopping should be just as easy as agreeing. The GDPR says it must be as easy to withdraw as to give consent [c1]. A company should also tell you about this right before you agree [c1][c2].\n\nIf you withdraw, you may also have the right to have your data erased and no longer processed, though some exceptions apply [c4].",
+      "citations": [
+        "c1",
+        "c2",
+        "c4"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches the sources: withdrawal at any time, no effect on earlier processing, equal ease (c1), being informed of the right (c1, c2), and erasure after withdrawal with exceptions (c4)."
+    },
+    {
+      "id": 7,
+      "question": "Does the data protection regulator in my country have to keep its own log of companies that broke the privacy rules and what penalties or corrective steps it imposed on them?",
+      "target": "Art. 57(1)",
+      "answer": "Yes. Each supervisory authority must keep internal records of infringements of the Regulation and of the measures it takes under Article 58(2). [c1]\n\nThose measures include corrective steps such as warnings, reprimands, orders, and limits on processing. Administrative fines can be imposed in addition to, or instead of, those measures. [c3]\n\nThe authority must also publish an annual report on its activities. That report may list the types of infringement notified and the types of measures taken, though it is not required to. [c2]",
+      "citations": [
+        "c1",
+        "c3",
+        "c2"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": false,
+      "citations_ok": false,
+      "reason": "The claim that the measures include warnings, reprimands, orders and limits on processing is not listed in any source (c3 only refers to Art. 58(2) points without naming them), so it is unsupported and wrongly cited to c3."
+    },
+    {
+      "id": 8,
+      "question": "Can an organization use my sensitive details, like health or religion information, without my consent if it's done for an important public benefit that a law allows and protects me?",
+      "target": "Art. 9(2)",
+      "answer": "Yes, in some cases. The GDPR allows sensitive data to be used without your consent, but only when a specific law permits it and the use serves an important public purpose. The law must be proportionate to the aim, protect your fundamental rights, and include suitable, specific safeguards [c1][c6].\n\n**Public interest and public health**\n\n- Sensitive data can be processed without consent for substantial public interest, if a Union or Member State law allows it and includes safeguards [c1].\n- For public health, processing can be necessary without your consent, but it must be subject to suitable and specific measures to protect your rights and freedoms [c4].\n- Health data may be used for health-related purposes only where necessary, such as managing health services, quality control, or health security. This must rest on a law that meets an objective of public interest [c5].\n\n**Limits on use**\n\n- Health data used for public interest reasons should not be processed for other purposes by third parties such as employers, insurance companies, or banks [c4].\n- Where health data is handled by people bound by professional secrecy, the law must provide protections, in particular that secrecy [c2][c5].\n\n**Religion**\n\nThe sources speak about special categories of personal data in general and do not single out religion. The same general rules would apply, but the sources do not say more specifically how they apply to religious information.",
+      "citations": [
+        "c1",
+        "c6",
+        "c4",
+        "c5",
+        "c2"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches the cited sources (c1, c2, c4, c5, c6), and the note that the sources do not single out religion is accurate; the professional-secrecy line is slightly loosely framed but still supported by c2 and c5."
+    },
+    {
+      "id": 9,
+      "question": "What does a company have to prove before it is allowed to hand out data protection certificates or seals to other businesses?",
+      "target": "Art. 43(2)",
+      "answer": "A business that wants to issue data protection certificates or seals must be accredited as a certification body first. Before accreditation, it must show that it:\n\n- **Has the right expertise:** The body needs an appropriate level of expertise in data protection [c2].\n- **Is independent and expert on the subject:** It must demonstrate this to the satisfaction of the competent supervisory authority [c1].\n- **Commits to the approved criteria:** It must undertake to respect the certification criteria, which are approved by the supervisory authority or the Board [c1][c6].\n- **Has procedures for certification:** It needs established procedures for issuing, periodically reviewing, and withdrawing certificates, seals, and marks [c1].\n- **Handles complaints:** It needs procedures and structures for complaints about infringements or how certification is implemented, and these must be transparent to data subjects and the public [c1].\n- **Has no conflict of interest:** It must show, to the supervisory authority's satisfaction, that its tasks and duties do not create a conflict of interest [c1].\n\nAccreditation is carried out by the competent supervisory authority or the national accreditation body, using criteria approved by the supervisory authority or the Board [c2][c3][c4]. Accreditation lasts for a maximum of five years and can be renewed if the body still meets the requirements [c5].",
+      "citations": [
+        "c2",
+        "c1",
+        "c6",
+        "c3",
+        "c4",
+        "c5"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each listed requirement matches Art. 43(2) [c1] or the expertise wording in Art. 43(1) [c2]; the approved-criteria point is supported by [c1] and [c6]; the accreditation bodies and criteria are supported by [c2], [c3] and [c4]; and the five-year limit with renewal is supported by [c5]."
+    },
+    {
+      "id": 10,
+      "question": "If a data protection authority in another country asks for help with my case, can they use the information they receive for anything other than the reason they asked for it?",
+      "target": "Art. 61(3)",
+      "answer": "No. Under the GDPR, information exchanged in mutual assistance may be used only for the purpose for which it was requested [c1].\n\nThe rule applies to requests between supervisory authorities, and the requests must state their purpose and reasons [c1]. Where the other authority is outside the EU, the GDPR says cooperation, including information exchange, must be subject to appropriate safeguards for personal data and other fundamental rights [c2]. The sources do not say more about how that applies to a particular non-EU authority.",
+      "citations": [
+        "c1",
+        "c2"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "The purpose-limitation rule and the requirement that requests state their purpose and reasons come from c1, and the safeguards point for non-EU cooperation comes from c2, with the answer noting the sources say no more than that."
+    },
+    {
+      "id": 11,
+      "question": "What does it mean when the data protection rules talk about an online service, and where can I find the official description of that term?",
+      "target": "Art. 4(25)",
+      "answer": "The data protection rules don't use the term \"online service.\" They use **\"information society service\"** instead. Article 4(25) defines it as a service as defined in point (b) of Article 1(1) of Directive (EU) 2015/1535 [c1].\n\nThe official description is therefore in Directive (EU) 2015/1535, Article 1(1)(b). The sources you provided don't include that text, so I can't tell you what it says.\n\nThe term matters in one place. Article 21(5) says that, in the context of information society services, a person may object to processing by automated means using technical specifications, notwithstanding Directive 2002/58/EC [c2].",
+      "citations": [
+        "c1",
+        "c2"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": false,
+      "citations_ok": true,
+      "reason": "The claims that the rules never use 'online service' and that the term matters in 'one place' (Art. 21(5)) are not supported by the sources, which cover only part of the Regulation and also show the term in the Art. 4(25) definition; the cited claims themselves match c1 and c2."
+    },
+    {
+      "id": 12,
+      "question": "Does the national data protection authority in my country give advice to the government and lawmakers when they are drafting new rules that affect people's privacy?",
+      "target": "Art. 57(1)",
+      "answer": "Yes, the GDPR gives national supervisory authorities this role, though the details depend on your country's law. Each authority must advise its national parliament, government, and other institutions on legislative and administrative measures that affect people's rights and freedoms in relation to data processing, in line with national law [c1]. It can also issue opinions to parliament, the government, and other bodies, and to the public, on any issue related to protecting personal data [c2].\n\nMember States must also consult the authority while they prepare a bill for parliament, or a regulation based on such a bill, that involves processing personal data [c3]. The GDPR says this consultation helps ensure the planned processing complies with the Regulation and reduces risks to individuals [c4].\n\nThe sources don't say how your particular authority carries this out in practice. They also don't say whether its opinions are binding. Your country's data protection authority or its published rules would answer those points.",
+      "citations": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches its source: c1 covers the advisory task, c2 the opinions to parliament, government and the public, c3 the consultation duty for legislative proposals, and c4 the compliance and risk-mitigation purpose. The closing caveats about practice and binding force are accurate statements of what the sources omit."
+    },
+    {
+      "id": 13,
+      "question": "If I hire an outside company to handle my customers' data, what must our agreement say about the company only acting on my written instructions, including sending data abroad?",
+      "target": "Art. 28(3)",
+      "answer": "Your agreement must say that the outside company processes the personal data only on documented instructions from you. This includes any transfers of the data to a third country or international organisation. [c1]\n\nThe company may depart from your instructions only if Union or Member State law requires it. In that case, it must tell you of the legal requirement before processing, unless that law prohibits the notice on important grounds of public interest. [c1]\n\nThe agreement must be in writing, including in electronic form. [c6]\n\nIf the company sends data abroad, the transfer must also meet the transfer rules. Without an adequacy decision, the transfer is allowed only if appropriate safeguards are in place and enforceable data subject rights and effective legal remedies are available. [c4] Transfers may only be carried out in full compliance with the Regulation. [c5]",
+      "citations": [
+        "c1",
+        "c6",
+        "c4",
+        "c5"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches its cited source: c1 for documented instructions, transfers, and the legal-requirement exception with prior notice; c6 for the writing requirement; c4 for safeguards absent an Art. 45(3) decision; c5 for full compliance with the Regulation."
+    },
+    {
+      "id": 14,
+      "question": "If I send a saliva sample to a DNA testing company, does the information about my body and health that they get from it count as a special kind of personal data?",
+      "target": "Art. 4(13)",
+      "answer": "Yes, according to these sources, the information from a DNA test would likely count as a special category of personal data.\n\nGenetic data means personal data about inherited or acquired genetic characteristics that give unique information about a person's physiology or health. It typically results from analysing a biological sample from the person [c1][c3].\n\nData concerning health is also covered. It includes information derived from testing a body part or bodily substance, including genetic data and biological samples [c4][c5].\n\nArticle 9(1) lists both genetic data and data concerning health as special categories. Processing them is prohibited under that provision [c2]. The sources provided do not set out the exceptions that allow such processing, so I can't say whether the testing company could lawfully process your data.\n\nMember States may also add further conditions or limits on processing genetic data, biometric data, or health data [c6].",
+      "citations": [
+        "c1",
+        "c3",
+        "c4",
+        "c5",
+        "c2",
+        "c6"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches the sources: Art. 4(13) and Recital 34 for genetic data, Recital 35 and Art. 4(15) for health data, Art. 9(1) for the listing and prohibition, and Art. 9(4) for Member State conditions. The answer also correctly notes that the exceptions are not in the sources."
+    },
+    {
+      "id": 15,
+      "question": "Can my employer handle sensitive details about me, like health information, if it's needed to meet job-related legal duties such as sick pay or social security rules?",
+      "target": "Art. 9(2)",
+      "answer": "Health information is a \"special category\" of personal data, and it is generally prohibited to process it [c5]. There is an exception, though. Your employer can process it where the processing is necessary to carry out its employment and social security obligations [c1].\n\nThe exception has conditions:\n\n- **It must be necessary.** The processing has to be needed for the specific obligation, such as handling sick pay or meeting social security requirements [c1].\n- **It must be authorised by law or a collective agreement.** This means EU or Member State law, or a collective agreement made under Member State law [c1].\n- **Appropriate safeguards must apply.** The law or agreement must protect your fundamental rights and interests [c1].\n\nMember States can also set more specific rules for processing employees' personal data in the employment context, including for performing the employment contract and for benefits related to employment [c2][c3]. Health processing for assessing an employee's working capacity may also fall under a separate exception, but only on the basis of law or under a contract with a health professional, and subject to safeguards [c6].\n\nThe sources do not say which specific sick pay or social security rules apply to you. Those depend on the law in your country.",
+      "citations": [
+        "c5",
+        "c1",
+        "c2",
+        "c3",
+        "c6"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches its cited source: c5 for the Art. 9(1) prohibition, c1 for the employment/social security exception and its conditions, c2 and c3 for Member State specific rules, and c6 for the working-capacity exception. The closing note that the sources don't identify the specific national rules is accurate."
+    },
+    {
+      "id": 16,
+      "question": "If a court in a non-EU country orders my company to hand over customer data, do we have to comply right away?",
+      "target": "Art. 48",
+      "answer": "The sources don't say how quickly you must respond. They do say that a foreign court order alone does not make a transfer lawful.\n\n- Under Article 48, a non-EU court judgment requiring a transfer may only be recognised or enforced if it is based on an international agreement, such as a mutual legal assistance treaty, in force between that country and the EU or a Member State [c1]. Recital 115 notes that orders not based on such an agreement may breach international law [c2].\n- Any transfer must still meet the Chapter V conditions [c3]. Article 48 is without prejudice to other transfer grounds under that Chapter [c1].\n- Possible grounds include appropriate safeguards under Article 46, which require enforceable data subject rights and effective legal remedies [c6]. Derogations exist where there is no adequacy decision or appropriate safeguards, including where the transfer is necessary for legal claims [c4] or for important reasons of public interest [c5]. Recital 115 gives a similar example: disclosure necessary for an important public interest ground in EU or Member State law [c2].\n\nIn short, check whether an international agreement covers the order, and whether another Chapter V ground applies, before handing over the data. The sources do not say whether these grounds cover a specific foreign court order, so that needs a separate assessment.",
+      "citations": [
+        "c1",
+        "c2",
+        "c3",
+        "c6",
+        "c4",
+        "c5"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches the sources: Art. 48 on international agreements, Recital 115 on international law and the public interest example, Art. 44 on Chapter V conditions, Art. 46(1) safeguards, and the Art. 49(1)(d) and (e) derogations. The answer also correctly says the sources are silent on response timing and on whether these grounds cover a specific order."
+    },
+    {
+      "id": 17,
+      "question": "If my company shares personal data between its branches in different countries under internal company rules, how must those rules explain to people how they will be told about their rights and protections, beyond the usual privacy notices?",
+      "target": "Art. 47(2)",
+      "answer": "The internal rules must set out how people will be given information about the binding corporate rules, especially the provisions covered by points (d), (e) and (f), in addition to the information required under Articles 13 and 14 [c1]. The sources do not say what points (d) and (f) cover, so I can't go into those details.\n\nThe rules must also specify at least:\n\n- **Data subjects' rights and how to use them.** This includes the right not to be subject to decisions based solely on automated processing, including profiling under Article 22, and the right to complain to the supervisory authority and to the courts under Article 79. It also covers redress and, where appropriate, compensation for a breach of the rules [c2].\n- **Complaint procedures** [c5].\n- **The legally binding nature of the rules, both internally and externally** [c6].\n\nThe rules must also be legally binding on, and enforced by, every member of the group, including employees, and they must expressly give data subjects enforceable rights [c3].\n\nRecital 39 says that people should be made aware of risks, rules, safeguards and rights, and of how to exercise them. The information should be easy to access and understand, and written in clear and plain language [c4].",
+      "citations": [
+        "c1",
+        "c2",
+        "c5",
+        "c6",
+        "c3",
+        "c4"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches its cited source (c1 for the information requirement, c2 for rights and redress, c5 for complaint procedures, c6 for binding nature, c3 for enforceability, c4 for Recital 39), and the answer correctly says the sources do not define points (d) and (f)."
+    },
+    {
+      "id": 18,
+      "question": "If a company wants to use the information it collected from me for a new reason I never agreed to, what should it think about to decide whether the new use is still acceptable?",
+      "target": "Art. 6(4)",
+      "answer": "A company should weigh these points before using your information for a new purpose:\n\n- **Link to the original purpose:** Is there a connection between the reason the data was collected and the new use? [c1]\n- **Context and relationship:** What was the setting of collection, and what was the relationship between you and the company? [c1]\n- **Your reasonable expectations:** Based on your relationship with the company, would you reasonably expect the data to be used this way? [c2]\n- **Nature of the data:** Does the data include special categories of personal data or data about criminal convictions and offences? [c1]\n- **Consequences for you:** What effects could the new use have on you? [c1][c2]\n- **Safeguards:** Are protections in place, such as encryption or pseudonymisation? [c1][c2]\n\nIf the new purpose is not compatible with the original one, the company may not use the data for it. [c3]\n\nThe company must also tell you about the new purpose before it starts the further processing, along with any relevant further information. [c5]\n\nThe compatibility test does not apply if you have given consent, or if a law that is a necessary and proportionate measure in a democratic society allows the processing. [c1][c2]",
+      "citations": [
+        "c1",
+        "c2",
+        "c3",
+        "c5"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each factor, the incompatibility prohibition (c3), the prior-notice duty (c5), and the consent/law exception (c1, c2) match the cited sources."
+    },
+    {
+      "id": 19,
+      "question": "If a company I hired to handle data starts deciding for itself why and how to use that data, does it become responsible like the owner of the data?",
+      "target": "Art. 28(10)",
+      "answer": "Yes, in the GDPR's terms. If a processor infringes the Regulation by deciding the purposes and means of processing, it is treated as a controller for that processing [c1]. The GDPR defines a controller as the party that, alone or jointly with others, determines the purposes and means of processing personal data [c2].\n\nBeing treated as a controller for that processing does not remove any other liability. The rule applies without prejudice to Articles 82, 83 and 84 [c1].\n\nA processor is normally bound to process data only on documented instructions from the controller [c3][c4]. Acting on its own purposes is what moves it outside that role.",
+      "citations": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches its source: Art. 28(10) treats a processor that determines purposes and means as a controller and applies without prejudice to Arts. 82-84, Art. 4(7) defines a controller, and Arts. 28(3)(a) and 29 require processing only on the controller's instructions."
+    },
+    {
+      "id": 20,
+      "question": "Can our church or club keep records about our members' beliefs without asking each person's permission, as long as we don't share the information with anyone outside the group?",
+      "target": "Art. 9(2)",
+      "answer": "Yes, but only if your group meets every condition of the exception. Information about religious or philosophical beliefs is a special category, and processing it is prohibited by default [c2].\n\nA not-for-profit body with a political, philosophical, religious or trade union aim can process this kind of data without each person's explicit consent. It must do so in the course of its legitimate activities, with appropriate safeguards [c1]. The processing must relate solely to members, former members, or people who have regular contact with the body in connection with its purposes [c1]. The data must not be disclosed outside the body without the data subjects' consent [c1].\n\nSo keeping the records within the group is not enough on its own. The group must also have the relevant aim, and the records must cover only the people described above. A general club without such an aim would not fall within this exception, based on these sources. Explicit consent is another route to lawful processing [c3], but the sources do not say that a body must rely on it.\n\nSeparately, if your group has fewer than 250 people, you are generally exempt from keeping a record of processing activities. That exemption does not apply here, because processing special category data removes it [c4]. You would need to keep such a record, which must include the purposes of processing, the categories of data subjects and data, recipients, and time limits for erasure where possible [c5].\n\nIf you are a church or religious association with existing data protection rules, those rules may continue to apply, provided they are brought into line with the Regulation [c6].",
+      "citations": [
+        "c2",
+        "c1",
+        "c3",
+        "c4",
+        "c5",
+        "c6"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": false,
+      "citations_ok": true,
+      "reason": "The answer says the Art. 30(5) exemption applies to a group with 'fewer than 250 people', but c4 refers to an organisation 'employing fewer than 250 persons', so employees rather than members; every other claim matches the sources and the citations are attached to supporting text."
+    },
+    {
+      "id": 21,
+      "question": "Can the data protection authority in my country take a company that broke privacy rules to court?",
+      "target": "Art. 58(5)",
+      "answer": "Yes, in principle. Each EU Member State must provide by law that its data protection authority can bring GDPR infringements to the attention of the judicial authorities. Where appropriate, it can also start or take part in legal proceedings to enforce the GDPR [c1].\n\nThe sources don't say which specific powers your country's authority has or how its courts work. That depends on your national law.",
+      "citations": [
+        "c1"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "The answer accurately paraphrases Art. 58(5) [c1], which requires Member States to give their supervisory authorities the power to notify judicial authorities and to commence or engage in legal proceedings, and its caveat about national law is a fair limit on what the sources cover."
+    },
+    {
+      "id": 22,
+      "question": "If our company's internal data-sharing rules for international transfers get updated, how do we have to keep track of the changes and let the data protection regulator know?",
+      "target": "Art. 47(2)",
+      "answer": "Your binding corporate rules (BCRs) must set out how changes are recorded and how they are reported to the supervisory authority. The sources require that the rules specify \"the mechanisms for reporting and recording changes to the rules and reporting those changes to the supervisory authority\" [c1]. So the exact process is defined in your own BCRs, and the regulator must be told about changes through the mechanism those rules describe [c1].\n\nThe sources do not set out the specific steps, timing, or format for these updates. The BCRs should also cover how group members are kept to the rules and how compliance is verified, including making verification results available to the competent supervisory authority on request [c4][c5].\n\nSeparately, each controller must keep a record of its processing activities. That record must include any transfers of personal data to a third country or international organisation, and identify that country or organisation [c6]. Updating that record when your transfers change is a sensible way to track the changes, though the sources do not expressly link it to BCR updates.",
+      "citations": [
+        "c1",
+        "c4",
+        "c5",
+        "c6"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches the sources: c1 for the BCR change-reporting mechanism, c4 and c5 for compliance cooperation and verification results, and c6 for recording transfers. The answer also correctly says the sources give no specific steps, timing or format, and it flags the Article 30 record suggestion as an inference."
+    },
+    {
+      "id": 23,
+      "question": "What counts as a global organization, like a group created by an agreement between several countries, when it comes to handling my personal data?",
+      "target": "Art. 4(26)",
+      "answer": "Under the GDPR, an \"international organisation\" is an organisation and its subordinate bodies governed by public international law. It also includes any other body set up by, or on the basis of, an agreement between two or more countries [c1].\n\nFor your personal data, the key rule is about transfers. Personal data may be transferred to an international organisation where the European Commission has decided that the organisation ensures an adequate level of protection. Such a transfer does not need specific authorisation [c2]. When assessing this, the Commission should consider the organisation's obligations from participating in multilateral or regional systems, particularly those concerning personal data protection [c3].\n\nThe sources do not describe what protections apply if no adequacy decision exists.",
+      "citations": [
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "The definition follows Art. 4(26) [c1], the adequacy-decision transfer rule follows Art. 45(1) [c2], the multilateral-obligations point follows Recital 105 [c3], and the closing statement about missing sources is accurate."
+    },
+    {
+      "id": 24,
+      "question": "If a data protection authority leading a cross-border case agrees with another country's regulator who objected to its proposed decision, what happens next and how quickly do they have to respond?",
+      "target": "Art. 60(5)",
+      "answer": "If the lead authority decides to follow the objection, it must prepare a revised draft decision and send it to the other concerned authorities for their opinion [c1]. That revised draft goes through the same objection procedure, which gives the other authorities two weeks to respond [c1]. The regular objection period is four weeks after the authorities were first consulted [c2].\n\nIf none of the other authorities objects to the revised draft within that period, the lead authority and the concerned authorities are deemed to agree with it and are bound by it [c3]. The lead authority then adopts and notifies the decision to the controller or processor and informs the other authorities and the Board [c4].",
+      "citations": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches its source: the revised draft and two-week period (c1), the four-week initial period (c2), deemed agreement and binding effect (c3), and adoption, notification and informing the Board (c4)."
+    },
+    {
+      "id": 25,
+      "question": "Who decides what the little standardised pictures that explain how my data is used should show, and how companies should provide them?",
+      "target": "Art. 12(8)",
+      "answer": "The European Commission decides this. It has the power to adopt delegated acts that set the information the icons present and the procedures for providing standardised icons [c1]. Recital 166 confirms that these delegated acts are meant to cover the information shown by standardised icons and the procedures for providing them [c2].\n\nThe European Data Protection Board has a role too. It gives the Commission an opinion on the icons [c4].\n\nIcons are used alongside the information required under Articles 13 and 14, not instead of it. They give a clear, easy-to-see overview of the intended processing [c3][c5]. If icons are shown electronically, they must be machine-readable [c3][c5].",
+      "citations": [
+        "c1",
+        "c2",
+        "c4",
+        "c3",
+        "c5"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "The Commission's delegated-act power (c1, c2), the EDPB's opinion role (c4), the combination with Articles 13/14 information and the overview purpose (c3, c5), and machine-readability (c3, c5) are all supported by the cited sources."
+    },
+    {
+      "id": 26,
+      "question": "If I hire an outside company to handle my customers' data, does our contract have to say they'll help me meet my security, breach-reporting, and risk-assessment duties?",
+      "target": "Art. 28(3)",
+      "answer": "Yes. The contract must say the processor assists you in meeting your obligations under Articles 32 to 36 [c1]. Those articles cover security of processing [c3], breach notification to the supervisory authority [c4], and impact assessments [c6]. The contract must also say the processor takes all measures required under Article 32 [c2].\n\nThe contract must set out the subject-matter and duration of the processing, its nature and purpose, the types of personal data and categories of data subjects, and your obligations and rights [c1]. Recital 81 adds that you should use only processors that provide sufficient guarantees for meeting the Regulation's requirements, including security [c5].\n\nYour duties don't transfer to the processor. You remain responsible for notifying a breach within 72 hours, unless it is unlikely to risk people's rights and freedoms, and for giving reasons if you notify late [c4]. You also must review, where necessary, whether processing still matches your impact assessment, at least when the risk changes [c6].",
+      "citations": [
+        "c1",
+        "c3",
+        "c4",
+        "c6",
+        "c2",
+        "c5"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches the cited sources: c1 for the assistance clause under Arts. 32–36 and the required contract contents, c2 for the Art. 32 measures, c3, c4 and c6 for the security, breach and impact-assessment duties, and c5 for the 'sufficient guarantees' point. The remark that duties stay with the controller is a reasonable reading of c4 and c6, where the controller 'shall' notify and review."
+    },
+    {
+      "id": 27,
+      "question": "If national data protection regulators disagree about my company's case and it goes to the EU-level group of regulators for review, can any of them issue their own ruling while that review is still going on?",
+      "target": "Art. 65(4)",
+      "answer": "No. While the Board is reviewing the matter, the supervisory authorities concerned cannot adopt a decision on the subject matter submitted to it [c1].\n\nThe Board must adopt its decision within one month of the referral, by a two-thirds majority of its members. That period can be extended by a further month because of the complexity of the case [c2].\n\nOnce the Board decides, the lead authority or the authority where the complaint was lodged must adopt its final decision based on the Board's ruling, without undue delay and at the latest one month after the Board notifies its decision [c4].",
+      "citations": [
+        "c1",
+        "c2",
+        "c4"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches its source: c1 bars the authorities concerned from deciding during the Art. 65 periods, c2 gives the one-month deadline, two-thirds majority and one-month extension, and c4 gives the one-month deadline for the final decision."
+    },
+    {
+      "id": 28,
+      "question": "If the European data protection authorities can't reach a decision on a cross-border dispute in time, how is the final decision made, and who breaks the tie if the vote is evenly split?",
+      "target": "Art. 65(3)",
+      "answer": "If the Board cannot adopt its decision within the normal time limits, it has two more weeks after the second month ends. The decision then passes by a simple majority of the Board's members [c1]. The normal deadline is one month from referral, which can be extended by a further month for complex cases. During that time the Board's decision needs a two-thirds majority [c2].\n\nIf the members are split, the Chair's vote decides [c1].\n\nThe supervisory authorities cannot adopt their own decision on the matter while these periods are running [c4].\n\nAfter the Board notifies its decision, the lead supervisory authority (or the authority where the complaint was lodged) adopts its final decision based on the Board's decision. It must do so without undue delay and at the latest within one month of the notification [c3].",
+      "citations": [
+        "c1",
+        "c2",
+        "c4",
+        "c3"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "All claims (two-thirds majority in the first period, simple majority within two extra weeks, Chair's casting vote, bar on national decisions, one-month final decision) match the cited sources."
+    },
+    {
+      "id": 29,
+      "question": "What basic rules does a company have to follow when it collects, uses, stores, and protects my personal information?",
+      "target": "Art. 5(1)",
+      "answer": "Under the GDPR, a company must follow these core rules:\n\n**1. Use lawful, fair and transparent processing.** Processing must be lawful, fair and transparent to you [c1]. It must be easy to understand and use clear, plain language [c3].\n\n**2. Have a valid legal basis.** Processing is lawful only if at least one legal basis applies. Examples include your consent, a contract with you, a legal obligation, vital interests, a public-interest task, or the company's legitimate interests, which must not override your rights [c2].\n\n**3. Tell you what is happening.** When collecting data from you, the company must provide, at that time, its identity and contact details, the purposes and legal basis, any legitimate interests relied on, the recipients, and any transfers to third countries [c6][c3].\n\n**4. Collect only for specific purposes.** Data must be collected for specified, explicit and legitimate purposes, and not used in a way that is incompatible with those purposes [c1]. The purposes should be decided when the data is collected [c3].\n\n**5. Keep data limited and accurate.** The company should collect only what is adequate, relevant and necessary for its purposes [c1][c3]. It must keep data accurate and up to date, and correct or erase inaccurate data without delay [c1].\n\n**6. Don't keep data longer than necessary.** Data should be kept in identifiable form only as long as needed for its purpose [c1]. The company should set time limits for erasure or periodic review [c3].\n\n**7. Protect the data.** Data must be processed with appropriate security, including protection against unauthorised or unlawful processing and against accidental loss, destruction or damage [c1][c3].\n\n**8. Build in privacy by design and by default.** The company must put appropriate technical and organisational measures in place to apply these principles effectively, such as pseudonymisation [c4]. By default, it should process only the personal data needed for each specific purpose, including limits on the amount collected, how it is used, how long it is stored, and who can access it [c5].",
+      "citations": [
+        "c1",
+        "c3",
+        "c2",
+        "c6",
+        "c4",
+        "c5"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each point in the answer matches the cited sources (Art. 5(1), Art. 6(1), Recital 39, Art. 13(1), and Art. 25(1) and (2)), and every citation is attached to a claim that source supports."
+    },
+    {
+      "id": 30,
+      "question": "If a privacy regulator in one EU country thinks people's data needs protecting right away, can it skip the usual slow process of working with the main regulator on a case?",
+      "target": "Art. 60(11)",
+      "answer": "Yes, in exceptional circumstances. If a supervisory authority concerned sees an urgent need to protect people's rights and freedoms, it can depart from the consistency mechanism or the Article 60 cooperation procedure and immediately adopt provisional measures [c1]. Urgency is tied to cases where the enforcement of a data subject's right could be considerably impeded [c3].\n\nThese measures only produce legal effects on the authority's own territory, and they must have a specified validity period that cannot exceed three months [c1][c3]. The authority must communicate the measures and its reasons to the other concerned authorities, the Board and the Commission without delay [c1].\n\nIf it then thinks final measures are urgently needed, it can ask the Board for an urgent opinion or urgent binding decision, giving its reasons [c5]. Any supervisory authority can also ask the Board for an urgent opinion or decision where a competent authority has not taken appropriate action in an urgent situation [c4].",
+      "citations": [
+        "c1",
+        "c3",
+        "c5",
+        "c4"
+      ],
+      "found": true,
+      "target_cited": false,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches its source: Art. 66(1) for the derogation, territorial scope, three-month limit and notification duty; Recital 137 for the impeded-enforcement example; Art. 66(2) and 66(3) for the urgent Board requests."
+    },
+    {
+      "id": 31,
+      "question": "When can a data protection regulator in one EU country turn down another country's regulator who asks for help with a privacy case?",
+      "target": "Art. 61(4)",
+      "answer": "A data protection authority can refuse another authority's request for help only in two situations:\n\n- It is not competent for the subject matter of the request or for the measures it is asked to take [c1].\n- Complying would infringe the GDPR or EU or Member State law that applies to the receiving authority [c1].\n\nIf it refuses, it must explain its reasons [c2].\n\nThe requested authority also has a time limit. It must reply without undue delay and no later than one month after receiving the request [c3]. It must keep the requesting authority informed of the results or progress [c2]. If it does not provide that information within one month, the requesting authority may adopt a provisional measure in its own Member State, and the urgent need to act is presumed to be met [c4].",
+      "citations": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches its cited source: the two refusal grounds (c1), the duty to give reasons and to report results or progress (c2), the one-month reply deadline (c3), and the provisional measure with presumed urgency after a month without information (c4)."
+    },
+    {
+      "id": 32,
+      "question": "If the EU approved a country's data protection standards under the old privacy law from before 2018, is that approval still valid today?",
+      "target": "Art. 45(9)",
+      "answer": "Yes. Commission decisions adopted under the old Directive 95/46/EC remain in force until they are amended, replaced or repealed by a new Commission decision [c1][c2]. The old directive was repealed with effect from 25 May 2018 [c3], but that repeal does not by itself end these decisions [c1][c2].\n\nThe Commission must also keep monitoring developments in those countries and international organisations that could affect how the decisions work [c5].",
+      "citations": [
+        "c1",
+        "c2",
+        "c3",
+        "c5"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim is backed by the cited source: c1 and c2 say Directive-era Commission decisions stay in force until amended, replaced or repealed, c3 gives the 25 May 2018 repeal, and c5 sets out the ongoing monitoring duty."
+    },
+    {
+      "id": 33,
+      "question": "What are the internal company data protection policies that let a business group send personal information to its branches or partner companies in countries outside the EU?",
+      "target": "Art. 4(20)",
+      "answer": "These are called **binding corporate rules**. They are personal data protection policies that a controller or processor established in an EU Member State adheres to when transferring personal data to controllers or processors in one or more third countries, within a group of undertakings or a group of enterprises engaged in a joint economic activity [c1].\n\nThey can be used for transfers from the EU to organisations within the same group or joint economic activity, provided they include all essential principles and enforceable rights [c3]. They are one of the appropriate safeguards that can be used without a specific authorisation from a supervisory authority [c4].\n\nTo be approved, the rules must:\n\n- Be legally binding and apply to, and be enforced by, every member of the group, including employees [c2].\n- Expressly give data subjects enforceable rights over their personal data [c2].\n- Specify their legally binding nature, both internally and externally [c2][c6].\n\nA group covers a controlling undertaking and its controlled undertakings. The controlling undertaking is the one that can exert a dominant influence, for example through ownership, financial participation, or the rules that govern it [c5].",
+      "citations": [
+        "c1",
+        "c3",
+        "c4",
+        "c2",
+        "c6",
+        "c5"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches its cited source: c1 for the definition, c3 for use within a group, c4 for no specific authorisation, c2 and c6 for the approval requirements, and c5 for the group description. The 'internally and externally' point comes from c6, and c2 only points to paragraph 2 generally, which is a minor looseness in a paired citation."
+    },
+    {
+      "id": 34,
+      "question": "If I hire an outside company to handle my customers' information, does our contract have to say they'll help me answer people who ask to see or fix their data?",
+      "target": "Art. 28(3)",
+      "answer": "Yes. The contract must require the processor to help you respond to requests to exercise data subject rights under Chapter III. The processor must assist \"by appropriate technical and organisational measures, insofar as this is possible,\" and this duty is shaped by the nature of the processing [c1].\n\nThe contract must also be binding on the processor with regard to you as controller, and it must set out the subject-matter and duration of the processing, its nature and purpose, the type of personal data, the categories of data subjects, and your obligations and rights [c3][c5].",
+      "citations": [
+        "c1",
+        "c3",
+        "c5"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Art. 28(3)(e) [c1] supports the requirement that the processor assist with data subject requests, and the contract-content list is supported by Art. 28(3) in [c5] and largely by Recital 81 [c3]."
+    },
+    {
+      "id": 35,
+      "question": "If my company is based outside Europe, who is the person or business we have to appoint in writing to act for us on our data protection duties inside the EU?",
+      "target": "Art. 4(17)",
+      "answer": "Your company must designate a **representative in the Union**. This is a natural or legal person established in the EU, appointed by you in writing, who represents you on your obligations under the GDPR [c1][c2].\n\n**When this applies:** The requirement applies where the GDPR covers your processing under Article 3(2). That is the case when you process personal data of people in the EU and the processing relates to offering them goods or services, or to monitoring their behaviour within the EU [c6].\n\n**Where the representative must be based:** In one of the EU Member States where the data subjects whose data you process are located [c5].\n\n**What the representative does:** They are mandated to be addressed by supervisory authorities and data subjects, in addition to or instead of you, on all processing issues for compliance purposes [c4]. They act on your behalf and cooperate with supervisory authorities on compliance actions. The appointment must be made by a explicit written mandate [c3].\n\n**Your responsibility remains:** Appointing a representative does not affect your own responsibility or liability under the GDPR. The representative can also be subject to enforcement proceedings if you do not comply [c3].\n\n**Exception:** Recital 80 says no representative is needed where the processing is occasional, does not involve large-scale special category or criminal offence data, and is unlikely to risk people's rights and freedoms. It also does not apply to public authorities or bodies [c3].",
+      "citations": [
+        "c1",
+        "c2",
+        "c6",
+        "c5",
+        "c4",
+        "c3"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches the cited sources: the definition and written designation (c1, c2), Art. 3(2) scope (c6), the Member State location (c5), the mandate to be addressed (c4), and the written mandate, retained liability, enforcement exposure and Recital 80 exceptions (c3)."
+    },
+    {
+      "id": 36,
+      "question": "If a company operates in several EU countries and is investigated over a data problem, do the different national privacy regulators have to work together and share what they know?",
+      "target": "Art. 60(1)",
+      "answer": "Yes. Under the sources, the regulators must cooperate and share information.\n\nThe lead supervisory authority must work with the other supervisory authorities concerned, aiming to reach consensus. All of them must exchange all relevant information with each other [c1]. The lead authority is the one for the main establishment or single establishment, and the other authorities are concerned when the company has an establishment in their country, when people in their country are substantially affected, or when a complaint was lodged with them [c5].\n\nEach authority must also cooperate with, share information with, and provide mutual assistance to the others, so that the Regulation is applied and enforced consistently [c3][c2]. The lead authority may ask the others for mutual assistance at any time, including to help investigate or monitor a measure against a company based in another Member State [c4].\n\nAuthorities may also run joint investigations and joint enforcement measures, with staff from other Member States taking part, where appropriate [c6].",
+      "citations": [
+        "c1",
+        "c5",
+        "c3",
+        "c2",
+        "c4",
+        "c6"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches its cited source: c1 for the duty to cooperate and exchange information, c5 for lead and concerned authority criteria, c2 and c3 for mutual assistance and consistency, c4 for the lead authority's assistance requests, and c6 for joint operations."
+    },
+    {
+      "id": 37,
+      "question": "If a company gets my details from somewhere other than me, what else do they have to tell me, like how long they'll keep my data and where they got it?",
+      "target": "Art. 14(2)",
+      "answer": "If a company gets your data from someone else, it must tell you more than just who it is and why it has your data. Under Article 14(2), it must also give you:\n\n- **How long it will keep your data**, or if that's not possible, the criteria used to decide how long [c1]\n- **Where the data came from**, and whether it came from publicly accessible sources [c1]. If several sources were used and it can't tell you each one, it should give you general information instead [c3]\n- **Its legitimate interests**, if it is relying on them as the legal basis for processing [c1]\n- **Your rights** to ask for access, rectification, erasure, restriction of processing, to object, and to data portability [c1]\n- **Your right to withdraw consent** at any time, if the processing is based on consent, without affecting processing done before you withdrew it [c1]\n- **Your right to complain** to a supervisory authority [c1]\n- **Whether automated decision-making or profiling** is used, including meaningful information about the logic involved and what it means for you [c1]\n\nThe company must also cover the basics under Article 14(1). These include its identity and contact details, the purposes of processing and the legal basis, the categories of data, the recipients, and any transfers to third countries or international organisations [c2].\n\nTiming: the company must provide this within a reasonable period after getting your data, and no later than one month [c4]. If it will contact you using your data, it must tell you at the latest when it first contacts you. If it plans to pass your data to someone else, it must tell you at the latest when that disclosure first happens [c4].\n\nThere are limited exceptions. For example, the company doesn't have to tell you if you already have the information, or if providing it is impossible or would involve disproportionate effort [c6].",
+      "citations": [
+        "c1",
+        "c3",
+        "c2",
+        "c4",
+        "c6"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each point matches the cited source: the Art. 14(2) items to c1, the general-information fallback for multiple sources to c3, the Art. 14(1) basics to c2, the timing rules to c4, and the exceptions to c6."
+    },
+    {
+      "id": 38,
+      "question": "If a new law already required a general risk review before it was passed, does my public agency still have to do its own separate privacy risk check before starting the data handling that the law sets out?",
+      "target": "Art. 35(10)",
+      "answer": "Probably not, if all of the conditions in Article 35(10) are met. Where the processing rests on a legal obligation or a public-interest task and that law regulates the specific processing, the general DPIA rules in paragraphs 1 to 7 do not apply, provided a data protection impact assessment was already carried out as part of a general impact assessment when the law was adopted [c1].\n\nTwo points matter here:\n\n- **The earlier assessment must cover this processing.** The exemption applies only where the law regulates the specific processing operation or set of operations in question [c1]. A general review of a different scheme won't be enough.\n- **Your Member State can still require a separate check.** The exemption lasts unless Member States deem it necessary to carry out an assessment before processing [c1]. Recital 93 confirms that Member States may consider a prior assessment necessary when they adopt the law that sets out the public authority's tasks [c2].\n\nIf the conditions are met and your national law does not require a further assessment, you do not need to run a separate DPIA under Article 35 before starting the processing [c1]. Check your national law for any such requirement. The sources do not say what your national law provides.",
+      "citations": [
+        "c1",
+        "c2"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches Art. 35(10) and Recital 93, including the conditions, the Member State override and the caveat that national law is not covered by the sources; the 'different scheme' remark is a reasonable reading of the 'specific processing' requirement."
+    },
+    {
+      "id": 39,
+      "question": "If my information is sent to a company in another country, can I ask what protections are in place to keep it safe?",
+      "target": "Art. 15(2)",
+      "answer": "Yes. If your personal data is transferred to a third country or an international organisation, you have the right to be told about the appropriate safeguards that apply to the transfer [c1]. These safeguards are the ones under Article 46 [c1].\n\nWhere there is no adequacy decision, a controller or processor may transfer data only if it has provided appropriate safeguards, and enforceable data subject rights and effective legal remedies are available [c2]. Possible safeguards include binding corporate rules, standard data protection clauses, and contractual clauses authorised by a supervisory authority [c3][c5].\n\nTransfers must also comply with the GDPR's transfer rules overall, so that the level of protection for you is not undermined [c4].",
+      "citations": [
+        "c1",
+        "c2",
+        "c3",
+        "c5",
+        "c4"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches its source: c1 gives the right to be informed of Article 46 safeguards, c2 the conditions for transfers without an adequacy decision, c3 and c5 the safeguard types (binding corporate rules, standard clauses, authorised contractual clauses), and c4 the requirement that protection is not undermined."
+    },
+    {
+      "id": 40,
+      "question": "Can I file a complaint about how my personal data was handled using an online form, or do I have to send a letter?",
+      "target": "Art. 57(2)",
+      "answer": "Yes, you can use an online form. Supervisory authorities are expected to make complaints easier to file, for example with a complaint submission form that can be completed electronically [c2][c3].\n\nYou are not limited to that route. The same provisions say other means of communication are not excluded [c2][c3], so a letter should also be acceptable.\n\nYour complaint can be made to a supervisory authority in the Member State of your habitual residence, place of work, or place of the alleged infringement [c4]. The authority must investigate the complaint to the extent appropriate and keep you informed of its progress and outcome within a reasonable period [c1][c3].",
+      "citations": [
+        "c2",
+        "c3",
+        "c4",
+        "c1"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches its cited source: c2 and c3 cover the electronic form and the fact that other means are not excluded, c4 covers where to lodge the complaint, and c1 and c3 cover the duty to investigate and report back within a reasonable period. The conclusion that a letter is acceptable is a reasonable inference from 'without excluding other means of communication'."
+    },
+    {
+      "id": 41,
+      "question": "Can a company charge me money or turn me down if I keep asking to see the personal data they hold about me?",
+      "target": "Art. 12(5)",
+      "answer": "Yes, in some cases, but only under limited conditions.\n\n**Charging a fee:** Access is generally free of charge [c6]. A company can charge a reasonable fee, based on its administrative costs, if your requests are manifestly unfounded or excessive, especially because they are repetitive [c1]. It can also charge a reasonable fee for further copies you ask for after the first copy [c2].\n\n**Refusing to act:** A company can refuse to act on requests that are manifestly unfounded or excessive, especially if they are repetitive [c1]. However, the company must prove that your requests have that character [c1]. If it does not act, it must tell you without delay, and within one month at the latest, why it is not acting. It must also tell you that you can complain to a supervisory authority and seek a judicial remedy [c3].\n\n**Limits on refusal:** A company should not use these considerations to refuse to give you all of your information [c5]. If it holds a large amount of information about you, it may ask you to specify which information or processing activities your request covers before it delivers the data [c5].",
+      "citations": [
+        "c6",
+        "c1",
+        "c2",
+        "c3",
+        "c5"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": false,
+      "citations_ok": false,
+      "reason": "The answer says a company 'should not use these considerations to refuse to give you all of your information', placing this under refusal for unfounded or excessive requests, but in c5 that sentence is about protecting others' rights such as trade secrets and intellectual property, not about excessive requests."
+    },
+    {
+      "id": 42,
+      "question": "If my complaint about a company is turned down, which data protection office tells me the outcome and does the company also get told?",
+      "target": "Art. 60(8)",
+      "answer": "The office you lodged your complaint with tells you the outcome. If that office rejects or dismisses the complaint, it adopts the decision and notifies you of it [c1]. It must also inform you of the outcome and of the possibility of a judicial remedy [c2].\n\nYes, the company is told too. The authority that receives the complaint informs the controller of the decision [c1].\n\nIf only part of the complaint is dismissed and the rest is acted on, the lead authority handles the part against the company, and your authority handles the dismissed part. Your authority notifies you and informs the company of that part [c4].",
+      "citations": [
+        "c1",
+        "c2",
+        "c4"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "All claims (the receiving authority adopts and notifies the rejection decision, informs the complainant of the outcome and judicial remedy, informs the controller, and the split-decision handling) are directly supported by c1, c2 and c4."
+    },
+    {
+      "id": 43,
+      "question": "Can my small business choose to appoint someone to handle data privacy compliance even if the rules don't strictly force us to?",
+      "target": "Art. 37(4)",
+      "answer": "Yes. Where the mandatory cases don't apply, a controller or processor may still appoint a data protection officer [c1].\n\nIf you do, a few points from the sources apply:\n\n- The person should be chosen for professional qualities, especially expert knowledge of data protection law and practices and the ability to carry out the DPO tasks [c4].\n- The role can be filled by a staff member or by someone under a service contract [c3].\n- The DPO's tasks include advising you and your employees on their data protection obligations, monitoring compliance, advising on data protection impact assessments, cooperating with the supervisory authority, and acting as its contact point [c5].\n- You must publish the DPO's contact details and communicate them to the supervisory authority [c6].",
+      "citations": [
+        "c1",
+        "c4",
+        "c3",
+        "c5",
+        "c6"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches its cited source: voluntary designation (c1), professional qualities and expert knowledge (c4), staff member or service contract (c3), the listed DPO tasks (c5), and publishing and communicating contact details (c6)."
+    },
+    {
+      "id": 44,
+      "question": "If a company I run is being investigated over a data problem, can the main privacy regulator ask regulators in other EU countries for help or team up with them to check on a business based in another country?",
+      "target": "Art. 60(2)",
+      "answer": "Yes. The lead supervisory authority can ask other EU regulators for help and can work with them on joint investigations. It may make these requests at any time, particularly for investigations or for monitoring a measure against a business based in another Member State [c1].\n\n- **Mutual assistance:** Regulators must give each other relevant information and assistance. This can include information requests, inspections, and investigations [c4].\n- **Joint operations:** Regulators can run joint investigations and joint enforcement measures, using staff from other Member States' authorities where appropriate [c3].\n- **Other countries joining in:** If the business has establishments in several Member States, or many data subjects in more than one Member State are likely to be substantially affected, the regulator of each of those states can take part in joint operations. The lead authority must invite them and respond without delay to any request to participate [c2].\n- **Cooperation generally:** The lead authority must cooperate with the other concerned authorities, aiming for consensus, and they must share all relevant information [c5]. The lead authority is normally the one for the business's main establishment, or its single establishment, and other authorities are concerned where the business has an establishment in their country, where their residents are substantially affected, or where a complaint was lodged with them [c6].",
+      "citations": [
+        "c1",
+        "c4",
+        "c3",
+        "c2",
+        "c5",
+        "c6"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim in the answer matches its cited source: c1 for requests at any time, c4 for mutual assistance, c3 for joint operations, c2 for participation rights and the duty to invite, and c5 and c6 for cooperation, lead authority and concerned authorities."
+    },
+    {
+      "id": 45,
+      "question": "If a company lets a computer make an important decision about me automatically, what can I ask for to make sure a real person looks at it and I can argue against the result?",
+      "target": "Art. 22(3)",
+      "answer": "You can ask the company for a real person to review the decision. The GDPR gives you the right to obtain human intervention from the controller, to express your point of view, and to contest the decision [c2]. This applies where the automated decision is needed for a contract or is based on your explicit consent [c2][c4].\n\nYou can also ask the company to explain the decision. Recital 71 says safeguards should include an explanation of the decision reached after the assessment, and the right to challenge it [c3]. Your right of access covers the existence of automated decision-making, meaningful information about the logic involved, and what it means for you and its likely consequences [c5].\n\nIf the company does not respond properly, you have the right to an effective judicial remedy, without prejudice to complaining to a supervisory authority [c6].",
+      "citations": [
+        "c2",
+        "c4",
+        "c3",
+        "c5",
+        "c6"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches its source: c2 with c4 gives human intervention, the right to express a view and to contest in contract and explicit-consent cases; c3 gives the explanation; c5(h) gives the access rights; and c6 gives the judicial remedy."
+    },
+    {
+      "id": 46,
+      "question": "Can a healthcare provider handle my sensitive health information for my treatment if the staff member involved is legally bound to keep patient details confidential?",
+      "target": "Art. 9(3)",
+      "answer": "Yes, under the conditions set out in the sources. Health information is a special category of personal data, and processing it for treatment is allowed when it is necessary for the provision of health care or treatment [c1][c3]. That processing must be done on the basis of Union or Member State law, or under a contract with a health professional [c1].\n\nThe staff member's duty of confidentiality is one of the key safeguards. Health data may be processed for treatment when it is handled by, or under the responsibility of, a professional who is subject to an obligation of professional secrecy. Another person bound by a similar secrecy obligation under law or rules set by national competent bodies may also handle it [c2]. The regulation specifically recognises that health data can be processed this way where the people involved are legally bound to professional secrecy [c4].\n\nThe sources do not say what specific rules apply in your country or at your provider, so they do not cover how your records are stored or shared beyond your treatment.",
+      "citations": [
+        "c1",
+        "c3",
+        "c2",
+        "c4"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches Art. 9(2)(h), Art. 9(3) and Recital 53, and the [c3] citation only supports the health-data definition, which is acceptable alongside [c1]."
+    },
+    {
+      "id": 47,
+      "question": "If a data protection regulator in another country asks our country's regulator for help with a case, how quickly does it have to respond?",
+      "target": "Art. 61(2)",
+      "answer": "The requested regulator must reply without undue delay and no later than one month after receiving the request. The reply may include, for example, sending relevant information about the conduct of an investigation [c1].\n\nIf it does not provide the required information within one month, the requesting regulator may adopt a provisional measure in its own Member State. In that case, the urgent need to act is presumed to be met and requires an urgent binding decision from the Board [c2][c3].\n\nThe requested regulator also has to report on the results or progress of its measures [c5]. It can refuse only if it is not competent for the subject-matter or the measures requested, or if complying would infringe the GDPR or other applicable Union or Member State law. Any refusal must be explained with reasons [c5][c6].",
+      "citations": [
+        "c1",
+        "c2",
+        "c3",
+        "c5",
+        "c6"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Every claim matches the sources: the one-month deadline (c1), the provisional measure and urgent Board decision (c2, c3), the duty to report results or progress and give reasons for refusal (c5), and the limited grounds for refusal (c6)."
+    },
+    {
+      "id": 48,
+      "question": "If a data protection regulator in one country isn't doing enough to stop a problem that urgently threatens people's privacy, can another country's regulator ask the European-level board to step in quickly?",
+      "target": "Art. 66(3)",
+      "answer": "Yes. Any supervisory authority can ask the Board for an urgent opinion or an urgent binding decision if a competent supervisory authority has not taken an appropriate measure where there is an urgent need to act to protect people's rights and freedoms. The request must give reasons, including why action is urgent [c1].\n\nThe Board must adopt an urgent opinion or binding decision within two weeks, by a simple majority of its members [c4].",
+      "citations": [
+        "c1",
+        "c4"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Art. 66(3) [c1] supports that any supervisory authority may request an urgent opinion or binding decision, with reasons, when a competent authority has not taken an appropriate measure, and Art. 66(4) [c4] supports the two-week deadline and simple majority."
+    },
+    {
+      "id": 49,
+      "question": "As a small business that handles customer data, what must I do to show I'm following the privacy rules, and do I need to keep revisiting those steps as things change?",
+      "target": "Art. 24(1)",
+      "answer": "You must put in place appropriate technical and organisational measures, and be able to prove they work. The rules take into account the nature, scope, context and purposes of your processing and the risks to people's rights and freedoms [c1]. You are responsible for compliance and must be able to demonstrate it [c2]. The measures should be effective, and you should be able to show that they are [c4].\n\nWhere it is proportionate to your activities, these measures should include appropriate data protection policies [c3].\n\nAs a small business, you may have fewer formal obligations. The rules on records of processing activities do not apply to an organisation with fewer than 250 employees, unless one of these applies: the processing is likely to risk people's rights and freedoms, the processing is not occasional, or it includes special categories of data or criminal conviction data [c5]. Handling customer data on an ongoing basis may fall outside that exemption, so check whether any of those exceptions apply to you.\n\nYes, you need to keep revisiting your measures. They must be reviewed and updated where necessary [c1]. If you carry out a data protection impact assessment, the sources say it should be reviewed when the risk represented by processing changes [c6]. The sources do not say whether a small business must carry out such an assessment, so check that separately.",
+      "citations": [
+        "c1",
+        "c2",
+        "c4",
+        "c3",
+        "c5",
+        "c6"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches its cited source, and the answer flags what the sources leave open, such as whether a small business must carry out a DPIA; the only gap is that calling Art. 30 'records of processing activities' is not stated in the sources, which I treated as a minor point."
+    },
+    {
+      "id": 50,
+      "question": "Where can I find a public list of approved data protection certifications and seals, and the standards a certifying organization has to meet?",
+      "target": "Art. 43(6)",
+      "answer": "**Public list of certifications and seals:** The Board (the European Data Protection Board) must collate all certification mechanisms and data protection seals and marks in a register and make it publicly available by any appropriate means [c2]. Supervisory authorities must also make the certification requirements and criteria public in an easily accessible form and send them to the Board [c1].\n\n**Standards for certifying organizations:** Certification bodies must have an appropriate level of data protection expertise [c3]. They must be accredited by either the competent supervisory authority or the national accreditation body [c3]. The accreditation criteria are drafted and published by the competent supervisory authority [c5], and they are approved by that authority or by the Board [c4]. Where the national accreditation body is used, the bodies must meet EN-ISO/IEC 17065/2012 plus any additional requirements set by the supervisory authority [c3].\n\nTo be accredited, a certification body must show that it:\n- is independent and has expertise in the subject matter, to the satisfaction of the competent supervisory authority [c6];\n- commits to respecting the certification criteria [c6];\n- has procedures for issuing, periodically reviewing, and withdrawing certifications, seals, and marks [c6];\n- has procedures for handling complaints, which are transparent to data subjects and the public [c6]; and\n- can show that its tasks do not create a conflict of interest [c6].",
+      "citations": [
+        "c2",
+        "c1",
+        "c3",
+        "c5",
+        "c4",
+        "c6"
+      ],
+      "found": true,
+      "target_cited": true,
+      "faithful": true,
+      "citations_ok": true,
+      "reason": "Each claim matches its cited source: the Board register (c2, c1), accreditation routes and ISO 17065 (c3), criteria drafting and approval (c5, c4), and the accreditation conditions (c6)."
+    }
+  ]
+}

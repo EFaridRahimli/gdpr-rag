@@ -62,5 +62,16 @@ def test_eval_helpers():
     assert is_hit("Art. 17(1)(b)", "Art. 17(1)") and not is_hit("Art. 17(10)", "Art. 17(1)")
 
 
+def test_finalize_keeps_only_known_citations():
+    from gdpr_rag.answer import NOT_FOUND, finalize
+
+    sources = [{"cid": "c1"}, {"cid": "c2"}]
+    res = finalize("You can withdraw consent [c2][c9]. It is free [c1] .", sources)
+    assert res == {"answer": "You can withdraw consent [c2]. It is free [c1].",
+                   "citations": ["c2", "c1"], "found": True}
+    assert finalize("Probably yes [c7].", sources)["answer"] == NOT_FOUND  # no valid citation left
+    assert finalize("NOT_FOUND", sources)["found"] is False
+
+
 def test_rrf_rewards_agreement():
     assert rrf([[1, 2], [2, 3]]) == [2, 1, 3]

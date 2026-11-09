@@ -144,3 +144,62 @@ def check_baseline(result: dict, tolerance: float = 0.02) -> None:
     if result["recall@10"] < base - tolerance:
         raise SystemExit(f"recall@10 {result['recall@10']:.2f} fell below baseline {base:.2f}")
     print(f"recall@10 {result['recall@10']:.2f} vs baseline {base:.2f}: ok")
+
+
+JUDGE = """You grade an answer from a GDPR assistant against the sources it was given.
+
+Question: {question}
+
+Sources:
+{sources}
+
+Answer:
+{answer}
+
+faithful: every claim in the answer is supported by the sources.
+citations_ok: every [cN] tag is attached to a claim that source cN supports.
+Return only JSON: {{"faithful": true or false, "citations_ok": true or false, "reason": "<one sentence>"}}"""
+
+
+def answers(db_path: Path) -> None:
+    """Answer every golden question, check the target article is cited, LLM-judge the rest."""
+    from . import answer
+
+    golden = [json.loads(line) for line in GOLDEN.read_text(encoding="utf-8").splitlines()]
+    judge_model = llm.setting("EVAL_MODEL", llm.EVAL_MODEL)
+
+    def run(g):
+        db = store.connect(db_path)
+        sources, res = answer.answer(db, g["question"])
+        rec = {"id": g["id"], "question": g["question"], "target": g["target"], **res}
+        cited = [s for s in sources if s["cid"] in res["citations"]]
+        rec["target_cited"] = any(is_hit(s["label"], g["target"]) for s in cited)
+        if res["found"]:
+            listing = "\n\n".join(f"[{s['cid']}] {s['label']}\n{s['text']}" for s in sources)
+            prompt = JUDGE.format(question=g["question"], sources=listing, answer=res["answer"])
+            out = llm.chat([{"role": "user", "content": prompt}], judge_model, temperature=0)
+            m = re.search(r"\{.*\}", out, re.DOTALL)
+            rec.update(json.loads(m[0]) if m else {"faithful": False, "citations_ok": False,
+                                                   "reason": f"unparseable judge output: {out[:80]}"})
+        return rec
+
+    with ThreadPoolExecutor(WORKERS) as pool:
+        recs = list(pool.map(run, golden))
+    found = [r for r in recs if r["found"]]
+    n, f = len(recs), max(len(found), 1)
+    row = {
+        "answered": len(found) / n,
+        "target_cited": sum(r["target_cited"] for r in recs) / n,
+        "faithful": sum(bool(r.get("faithful")) for r in found) / f,
+        "citations_ok": sum(bool(r.get("citations_ok")) for r in found) / f,
+    }
+    table = ("| answered | target article cited | faithful | citations correct |\n|---|---|---|---|\n"
+             f"| {row['answered']:.2f} | {row['target_cited']:.2f} | {row['faithful']:.2f}"
+             f" | {row['citations_ok']:.2f} |")
+    out = EVAL_DIR / "results"
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "answers.json").write_text(json.dumps({"summary": row, "answers": recs}, indent=2,
+                                                 ensure_ascii=False), encoding="utf-8")
+    (out / "answers.md").write_text(table + "\n", encoding="utf-8")
+    print(f"{n} questions, answers by {llm.setting('OPENROUTER_MODEL', llm.ANSWER_MODEL)},"
+          f" judged by {judge_model}\n\n{table}")

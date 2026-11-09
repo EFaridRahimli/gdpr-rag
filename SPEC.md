@@ -110,7 +110,7 @@ Each ends in a demoable state.
 
 1. Ingest GDPR + hybrid retrieval → verify: CLI query returns the right articles. ✅
 2. Golden set + retrieval bake-off + CI → verify: comparison table prints. ✅
-3. FastAPI chat: streaming + validated citations → verify: answer eval runs locally.
+3. FastAPI chat: streaming + validated citations → verify: answer eval runs locally. ✅
 4. React UI: chat, source panel, history, settings (incl. API key).
 5. Uploads + scope toggle.
 6. Compliance check + its eval.

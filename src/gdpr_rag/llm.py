@@ -32,7 +32,7 @@ def setting(name: str, default: str) -> str:
 def _client() -> OpenAI:
     key = os.environ.get("OPENROUTER_API_KEY")
     if not key:
-        raise SystemExit("OPENROUTER_API_KEY is not set: add it to .env")
+        raise RuntimeError("OPENROUTER_API_KEY is not set: add it to .env")
     # new OpenRouter accounts get ~20 req/min per model; the SDK backs off on 429s
     return OpenAI(base_url="https://openrouter.ai/api/v1", api_key=key, max_retries=8)
 
@@ -58,6 +58,16 @@ def embed(texts: list[str], model: str, batch: int = 64) -> list[list[float]]:
         r = _client().embeddings.create(model=model, input=texts[i : i + batch])
         out += [d.embedding for d in sorted(r.data, key=lambda d: d.index)]
     return out
+
+
+def stream(messages: list[dict], model: str, **kw):
+    """Yield text deltas as the model produces them."""
+    _pace(model)
+    for chunk in _client().chat.completions.create(
+        model=model, messages=messages, stream=True, **kw
+    ):
+        if chunk.choices and (delta := chunk.choices[0].delta.content):
+            yield delta
 
 
 def chat(messages: list[dict], model: str, **kw) -> str:
