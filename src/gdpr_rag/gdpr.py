@@ -51,8 +51,8 @@ def _split(label: str, ref: str, heading: str, el: ET.Element, max_words: int) -
             point = _text(c.find(f".//{H}td"))
             sub = point.strip("()") if re.fullmatch(r"\(\w+\)", point) else point
             out.append(Chunk(f"{label}({sub})", ref, heading, f"{lead} {_text(c)}".strip()))
-        else:  # closing sentence after the points
-            out.append(Chunk(label, ref, heading, _text(c)))
+        else:  # closing sentence after the points: keep the lead-in so it reads in context
+            out.append(Chunk(label, ref, heading, f"{lead} [...] {_text(c)}".strip()))
     return out
 
 

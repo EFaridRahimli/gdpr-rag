@@ -54,7 +54,7 @@ def _llm_rerank(db, query: str, ids: list[int], k: int) -> list[int]:
     )
     out = llm.chat(
         [{"role": "user", "content": prompt}],
-        llm.setting("OPENROUTER_MODEL", llm.ANSWER_MODEL),
+        llm.fast_model(),
         temperature=0,
     )
     picked = [int(n) for n in re.findall(r"\d+", out)]  # tolerates code fences or prose

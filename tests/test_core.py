@@ -86,7 +86,7 @@ def test_server_settings_never_return_the_key_and_chats_cascade(tmp_path, monkey
     monkeypatch.setattr(llm, "ENV_KEY", None)
     monkeypatch.setattr(llm, "key_is_valid", lambda key: key.startswith("sk-or-good"))
     key = "sk-or-good-" + "x" * 40 + "abcd"
-    with TestClient(server.app) as client:
+    with TestClient(server.app, base_url="http://localhost") as client:
         assert client.put("/api/settings", json={"api_key": "sk-or-bad"}).status_code == 400
         saved = client.put("/api/settings", json={"api_key": key}).json()
         assert saved["key_hint"] == "sk-or-…abcd" and saved["key_source"] == "settings"
@@ -167,7 +167,7 @@ def test_document_upload_list_delete(tmp_path, monkeypatch):
 
     monkeypatch.setattr(server, "DB", tmp_path / "app.db")
     monkeypatch.setattr(llm, "embed", lambda texts, model: [[1.0, 0.0] for _ in texts])
-    with TestClient(server.app) as client:
+    with TestClient(server.app, base_url="http://localhost") as client:
         bad = client.post("/api/documents", files={"file": ("x.exe", b"MZ")})
         assert bad.status_code == 422 and "Unsupported" in bad.json()["detail"]
         md = b"# Retention\n\nWe keep customer data for two years.\n\n# Rights\n\nEmail us."
@@ -213,7 +213,12 @@ def test_compliance_endpoint_runs_stores_and_cascades(tmp_path, monkeypatch):
     reply = {"items": [{"id": "retention", "status": "Covered",
                         "evidence": ["We keep customer data for two years."]}]}
     monkeypatch.setattr(llm, "chat", lambda messages, model, **kw: json.dumps(reply))
-    with TestClient(server.app) as client:
+    from gdpr_rag import store
+
+    db = store.connect(server.DB)  # checks run on the ChatGPT plan: give the app a session
+    store.set_setting(db, "chatgpt_session", json.dumps({"access_token": "t", "expires_at": 9e9}))
+    db.close()
+    with TestClient(server.app, base_url="http://localhost") as client:
         md = b"# Retention\n\nWe keep customer data for two years."
         doc = client.post("/api/documents", files={"file": ("p.md", md)}).json()
         assert client.get(f"/api/documents/{doc['id']}/compliance").status_code == 404
@@ -243,7 +248,7 @@ def test_first_run_index_builds_after_key_is_saved(tmp_path, monkeypatch):
         return 1
 
     monkeypatch.setattr(ingest, "build", fake_build)
-    with TestClient(server.app) as client:  # no key: nothing starts
+    with TestClient(server.app, base_url="http://localhost") as client:  # no key: nothing starts
         assert client.get("/api/settings").json()["index"]["status"] == "missing"
         chat = client.post("/api/chat", json={"question": "hi"}).text
         assert "event: error" in chat and "Settings" in chat

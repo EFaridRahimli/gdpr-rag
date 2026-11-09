@@ -1,6 +1,7 @@
 {
-  "mode": "llm-rerank",
+  "mode": "vector",
   "embed_model": "google/gemini-embedding-2",
+  "recall@5": 0.98,
   "recall@10": 1.0,
-  "mrr": 0.96
+  "mrr": 0.78
 }

@@ -19,6 +19,9 @@ export function AnswerText({
   return (
     <div className="space-y-3 leading-7 [&_li]:my-1 [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:font-semibold [&_ul]:list-disc [&_ul]:pl-5">
       <Markdown
+        // never render images: a poisoned document could otherwise make the browser load a URL
+        // carrying the conversation (the server's CSP blocks remote images as a second layer)
+        disallowedElements={['img']}
         components={{
           a: ({ href, children }) => {
             const source = href?.startsWith('#c') ? byCid.get(href.slice(1)) : undefined

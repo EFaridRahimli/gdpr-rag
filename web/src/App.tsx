@@ -16,15 +16,35 @@ type View =
   | { kind: 'documents' } | { kind: 'settings' } | { kind: 'evals' }
 const PAGES = { documents: 'Documents', evals: 'Evaluation', settings: 'Settings' } as const
 
+// the ChatGPT sign-in returns to /?view=settings&chatgpt=connected (or &chatgpt_error=...)
+const returned = new URLSearchParams(window.location.search)
+const SIGN_IN_NOTICE = returned.get('chatgpt_error')
+  ? `ChatGPT sign-in failed: ${returned.get('chatgpt_error')}`
+  : returned.get('chatgpt') === 'connected'
+    ? 'Signed in with ChatGPT.'
+    : null
+if (returned.has('view')) window.history.replaceState(null, '', '/')
+
 export default function App() {
-  const [view, setView] = useState<View>({ kind: 'chat', id: null })
+  const [view, setView] = useState<View>(
+    returned.get('view') === 'settings' ? { kind: 'settings' } : { kind: 'chat', id: null },
+  )
   const [chats, setChats] = useState<ChatSummary[]>([])
   const [source, setSource] = useState<Source | null>(null)
   const [scope, setScope] = useState<Scope>('all')
   const [setup, setSetup] = useState<Settings | null>(null) // key + GDPR index status
+  const [offline, setOffline] = useState(false) // the local server isn't answering
+  const [navError, setNavError] = useState<string | null>(null)
+  const [chatSession, setChatSession] = useState(0) // a fresh ChatView for every chat the user opens
 
   const refreshSetup = useCallback(() => {
-    api.settings().then(setSetup).catch(() => setSetup(null))
+    api
+      .settings()
+      .then((s) => {
+        setSetup(s)
+        setOffline(false)
+      })
+      .catch(() => setOffline(true))
   }, [])
   useEffect(() => {
     refreshSetup()
@@ -37,13 +57,21 @@ export default function App() {
   const [navOpen, setNavOpen] = useState(false) // small screens only
 
   const refreshChats = useCallback(() => {
-    api.chats().then(setChats).catch(() => setChats([]))
+    api
+      .chats()
+      .then((c) => {
+        setChats(c)
+        setNavError(null)
+      })
+      .catch((e: Error) => setNavError(`Couldn't load chats: ${e.message}`)) // keep the old list
   }, [])
   useEffect(() => {
     refreshChats()
   }, [refreshChats])
 
   const go = (v: View) => {
+    if (v.kind === 'chat') setChatSession((n) => n + 1)
+    refreshSetup() // also notices a server that stopped while the page was open
     setView(v)
     setSource(null)
     setNavOpen(false)
@@ -52,7 +80,11 @@ export default function App() {
   const activeChat = view.kind === 'chat' ? view.id : undefined
 
   async function remove(id: number) {
-    await api.deleteChat(id)
+    try {
+      await api.deleteChat(id)
+    } catch (e) {
+      return setNavError(`Couldn't delete the chat: ${(e as Error).message}`)
+    }
     if (activeChat === id) go({ kind: 'chat', id: null })
     refreshChats()
   }
@@ -105,6 +137,11 @@ export default function App() {
             </li>
           ))}
         </ul>
+        {navError && (
+          <p role="alert" className="px-5 py-2 text-sm">
+            {navError}
+          </p>
+        )}
         <div className="space-y-1 border-t px-3 py-3 text-sm">
           {(Object.keys(PAGES) as (keyof typeof PAGES)[]).map((kind) => (
             <button
@@ -125,9 +162,19 @@ export default function App() {
         </div>
       </nav>
 
-      <main className="flex min-h-0 min-w-0 flex-1">
+      <main className="flex min-h-0 min-w-0 flex-1 flex-col">
+        {offline && (
+          <div role="alert" className="flex items-center justify-between gap-4 border-b px-6 py-3 text-sm">
+            <span>Can't reach the gdpr-rag server. Is the Terminal window that runs it still open?</span>
+            <Button variant="outline" size="sm" onClick={refreshSetup}>
+              Retry
+            </Button>
+          </div>
+        )}
+        <div className="flex min-h-0 flex-1">
         {view.kind === 'chat' && (
           <ChatView
+            key={chatSession}
             chatId={view.id}
             setup={setup}
             onOpenSettings={() => go({ kind: 'settings' })}
@@ -141,10 +188,11 @@ export default function App() {
           />
         )}
         {view.kind === 'documents' && <DocumentsView onCheck={(doc) => go({ kind: 'compliance', doc })} />}
-        {view.kind === 'compliance' && <ComplianceView doc={view.doc} onCite={setSource} />}
-        {view.kind === 'settings' && <SettingsView settings={setup} onChange={setSetup} />}
+        {view.kind === 'compliance' && <ComplianceView key={view.doc.id} doc={view.doc} onCite={setSource} />}
+        {view.kind === 'settings' && <SettingsView settings={setup} onChange={setSetup} notice={SIGN_IN_NOTICE} />}
         {view.kind === 'evals' && <EvalsView />}
         {source && <SourcePanel source={source} onClose={closeSource} />}
+        </div>
       </main>
     </div>
   )

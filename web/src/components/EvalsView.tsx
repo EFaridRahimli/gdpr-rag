@@ -29,11 +29,19 @@ export function EvalsView() {
           <section className="space-y-3">
             <h2 className="font-medium">Answers</h2>
             <Table
-              head={['Answered', 'Expected article cited', 'Faithful', 'Citations correct']}
-              rows={[[pct(a.answered), pct(a.target_cited), pct(a.faithful), pct(a.citations_ok)]]}
+              head={['Answered', 'Expected article cited', 'Faithful', 'Citations correct', 'Off-topic declined']}
+              rows={[[
+                pct(a.answered),
+                pct(a.target_cited),
+                pct(a.faithful),
+                pct(a.citations_ok),
+                a.declined_off_topic === undefined ? '-' : pct(a.declined_off_topic),
+              ]]}
             />
             <p className="text-sm text-muted-foreground">
-              Faithfulness and citation correctness are judged by a second model.
+              Answers by GPT-6.1-Sol on a ChatGPT plan. Faithfulness and citation correctness are judged by
+              Claude Sonnet, a different model family. Off-topic: 10 questions the GDPR can’t answer, which
+              should be declined.
             </p>
           </section>
         )}

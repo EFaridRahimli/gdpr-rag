@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
-import { api, type ComplianceItem, type Report, type Source, type Status } from '@/api'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { api, HttpError, type ComplianceItem, type Report, type Source, type Status } from '@/api'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -37,26 +37,35 @@ export function ComplianceView({
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const alive = useRef(true) // App remounts this view per document; ignore late replies after leaving
+  useEffect(() => {
+    alive.current = true
+    return () => {
+      alive.current = false
+    }
+  }, [])
+
   const run = useCallback(() => {
     setBusy(true)
     setError(null)
     api
       .runCompliance(doc.id)
-      .then(setReport)
-      .catch((e: Error) => setError(e.message))
-      .finally(() => setBusy(false))
+      .then((r) => alive.current && setReport(r))
+      .catch((e: Error) => alive.current && setError(e.message))
+      .finally(() => alive.current && setBusy(false))
   }, [doc.id])
 
   useEffect(() => {
-    let cancelled = false // StrictMode mounts twice in dev: don't start two paid checks
-    setReport(null)
+    const load = new AbortController() // also stops StrictMode's double mount starting two paid checks
     api
-      .compliance(doc.id)
-      .then((r) => !cancelled && setReport(r))
-      .catch(() => !cancelled && run()) // no saved report yet: run the check
-    return () => {
-      cancelled = true
-    }
+      .compliance(doc.id, load.signal)
+      .then(setReport)
+      .catch((e: Error) => {
+        if (load.signal.aborted) return
+        if (e instanceof HttpError && e.status === 404) run() // no saved report yet: run the check
+        else setError(`Could not load the saved report: ${e.message}`)
+      })
+    return () => load.abort()
   }, [doc.id, run])
 
   function download() {

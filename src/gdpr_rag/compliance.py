@@ -98,7 +98,7 @@ def check(db, doc_id: int, model: str | None = None) -> dict:
     requirements = "\n".join(f"- {cid}: {title} ({point})" for cid, title, point, _ in CHECKLIST)
     out = llm.chat(
         [{"role": "user", "content": PROMPT.format(requirements=requirements, policy=policy)}],
-        model or llm.setting("OPENROUTER_MODEL", llm.ANSWER_MODEL),
+        model or llm.answer_model(),
         temperature=0,
     )
     m = re.search(r"\{.*\}", out, re.DOTALL)

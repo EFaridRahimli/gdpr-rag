@@ -21,7 +21,7 @@ export function DocumentsView({ onCheck }: { onCheck: (doc: Doc) => void }) {
 
   async function upload(files: FileList | null) {
     const file = files?.[0]
-    if (!file) return
+    if (!file || busy) return // one upload at a time (a drop can arrive mid-upload)
     if (file.size > MAX_BYTES) return setStatus(`${file.name} is larger than 20 MB.`)
     setBusy(true)
     setStatus(`Reading and indexing ${file.name}…`)

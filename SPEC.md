@@ -22,9 +22,9 @@ Each user brings their own OpenRouter key. (Claude subscription tokens were reje
 | Layer | Choice |
 |---|---|
 | Backend | Python, FastAPI, uv |
-| LLM | OpenRouter via the `openai` SDK (`base_url=https://openrouter.ai/api/v1`), streaming. Answers: `OPENROUTER_MODEL`, default `anthropic/claude-haiku-5.5`, changeable in settings. Golden-set generation and judging: `EVAL_MODEL`, default `anthropic/claude-sonnet-5.5` |
-| Embeddings | OpenRouter embeddings API, `google/gemini-embedding-2` (bake-off winner) |
-| Reranker | LLM rerank of the 30 fused candidates with the answer model (bake-off winner; OpenRouter has no rerank models, the local tiny reranker scored far worse) |
+| LLM | ChatGPT Plus/Pro plan via Sign in with ChatGPT (OAuth + PKCE, Responses API): answers `gpt-6.1-sol`, reranking and follow-ups `gpt-6-luna`, both changeable in settings. Question generation and judging: `EVAL_MODEL`, `anthropic/claude-sonnet-5.5` via OpenRouter. Claude Haiku answers were dropped: 0.86 vs 0.98 faithfulness on the same retrieval |
+| Embeddings | OpenRouter embeddings API, `google/gemini-embedding-2` (bake-off winner; ChatGPT plans can't embed, and the best local model reached only 0.82 recall@5) |
+| Reranker | LLM rerank of the 30 fused candidates with the fast model, `gpt-6-luna` (the local tiny cross-encoder scored far worse) |
 | Store | one SQLite file: sqlite-vec (vectors, one table per embedding model), FTS5 (BM25), app data (chats, documents, settings) |
 | PDF parsing | pymupdf4llm; DOCX via python-docx; MD/TXT direct |
 | Frontend | React + Vite + TypeScript, shadcn/ui (Radix + Tailwind) |

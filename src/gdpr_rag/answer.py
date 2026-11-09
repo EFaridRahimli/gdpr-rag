@@ -57,7 +57,7 @@ def finalize(text: str, sources: list[dict]) -> dict:
 def answer(db, question: str) -> tuple[list[dict], dict]:
     """Non-streaming path, used by the eval."""
     sources = sources_for(db, question)
-    model = llm.setting("OPENROUTER_MODEL", llm.ANSWER_MODEL)
+    model = llm.answer_model()
     return sources, finalize(llm.chat(messages_for(question, sources), model, temperature=0), sources)
 
 
@@ -76,6 +76,6 @@ def standalone(history: list[dict], question: str) -> str:
     if not history:
         return question
     turns = "\n".join(f"{m['role']}: {m['content'][:600]}" for m in history[-6:])
-    model = llm.setting("OPENROUTER_MODEL", llm.ANSWER_MODEL)
+    model = llm.fast_model()
     prompt = REWRITE.format(history=turns, question=question)
     return llm.chat([{"role": "user", "content": prompt}], model, temperature=0).strip() or question

@@ -39,20 +39,24 @@ export function ChatView({
   const [input, setInput] = useState('')
   const [busy, setBusy] = useState(false)
   const [loadError, setLoadError] = useState<string | null>(null)
-  const justCreated = useRef<number | null>(null) // chat created by this view mid-stream: don't reload it
+  const [announce, setAnnounce] = useState('') // screen-reader status; tokens aren't announced
+  // App mounts a fresh ChatView for every chat the user opens, so this only skips reloading the
+  // chat this view itself created mid-answer
+  const justCreated = useRef<number | null>(null)
+  const answering = useRef<AbortController | null>(null)
   const bottom = useRef<HTMLDivElement>(null)
 
+  useEffect(() => () => answering.current?.abort(), []) // leaving the chat stops its answer
+
   useEffect(() => {
-    if (chatId === null) {
-      setMessages([])
-      return
-    }
-    if (chatId === justCreated.current) return
+    if (chatId === null || chatId === justCreated.current) return
+    const load = new AbortController()
     setLoadError(null)
     api
-      .chat(chatId)
+      .chat(chatId, load.signal)
       .then((c) => setMessages(c.messages))
-      .catch((e: Error) => setLoadError(e.message))
+      .catch((e: Error) => !load.signal.aborted && setLoadError(e.message))
+    return () => load.abort()
   }, [chatId])
 
   useEffect(() => {
@@ -65,21 +69,36 @@ export function ChatView({
     setInput('')
     setBusy(true)
     setMessages((m) => [...m, { role: 'user', content: question }, { role: 'assistant', content: '', pending: true }])
+    setAnnounce('Searching…')
     const update = (fn: (m: Message) => Message) =>
       setMessages((m) => [...m.slice(0, -1), fn(m[m.length - 1])])
+    const controller = new AbortController()
+    answering.current = controller
     try {
-      await streamChat(question, chatId, scope, {
-        chat: (id) => {
-          justCreated.current = id
-          onChatSaved(id)
+      await streamChat(
+        question,
+        chatId,
+        scope,
+        {
+          chat: (id) => {
+            justCreated.current = id
+            onChatSaved(id)
+          },
+          sources: (sources) => update((a) => ({ ...a, sources })),
+          token: (t) => update((a) => ({ ...a, content: a.content + t })),
+          done: (r) => {
+            update((a) => ({ ...a, content: r.answer, citations: r.citations, pending: false }))
+            setAnnounce(r.found ? 'Answer ready.' : 'No answer found in the sources.')
+          },
+          error: (error) => {
+            update((a) => ({ ...a, pending: false, error }))
+            setAnnounce(`Error: ${error}`)
+          },
         },
-        sources: (sources) => update((a) => ({ ...a, sources })),
-        token: (t) => update((a) => ({ ...a, content: a.content + t })),
-        done: (r) => update((a) => ({ ...a, content: r.answer, citations: r.citations, pending: false })),
-        error: (error) => update((a) => ({ ...a, pending: false, error })),
-      })
+        controller.signal,
+      )
     } catch (e) {
-      update((a) => ({ ...a, pending: false, error: (e as Error).message }))
+      if (!controller.signal.aborted) update((a) => ({ ...a, pending: false, error: (e as Error).message }))
     } finally {
       setBusy(false)
     }
@@ -88,7 +107,10 @@ export function ChatView({
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-2xl px-6 py-10" aria-live="polite">
+        <div className="mx-auto w-full max-w-2xl px-6 py-10">
+          <p className="sr-only" aria-live="polite">
+            {announce}
+          </p>
           {loadError && <p className="text-sm">Could not load this chat: {loadError}</p>}
           {messages.length === 0 && !loadError && (
             <div className="pt-[12vh]">
@@ -96,7 +118,7 @@ export function ChatView({
               <p className="mt-2 text-muted-foreground">
                 Answers come only from the regulation's text and your documents, with every claim linked to its source.
               </p>
-              {setup && setup.index.status !== 'ready' ? (
+              {setup && (!setup.chatgpt.connected || setup.index.status !== 'ready') ? (
                 <SetupNotice setup={setup} onOpenSettings={onOpenSettings} />
               ) : (
               <div className="mt-8 flex flex-col items-start gap-1">
@@ -116,7 +138,12 @@ export function ChatView({
           )}
           <div className="space-y-8">
             {messages.map((m, i) => (
-              <MessageView key={i} message={m} onCite={onCite} />
+              <div key={i} className="space-y-8">
+                <MessageView message={m} onCite={onCite} />
+                {m.role === 'user' && messages[i + 1]?.role !== 'assistant' && !busy && (
+                  <p className="text-sm text-muted-foreground">This answer was interrupted and wasn't saved.</p>
+                )}
+              </div>
             ))}
           </div>
           <div ref={bottom} />
@@ -190,11 +217,7 @@ function MessageView({ message: m, onCite }: { message: Message; onCite: (s: Sou
       </p>
     )
   if (waiting)
-    return (
-      <p className="text-muted-foreground" role="status">
-        {sources.length ? 'Writing the answer…' : 'Searching…'}
-      </p>
-    )
+    return <p className="text-muted-foreground">{sources.length ? 'Writing the answer…' : 'Searching…'}</p>
   const cited = (m.citations ?? []).map((cid) => sources.find((s) => s.cid === cid)).filter((s) => s !== undefined)
   return (
     <div>
@@ -219,7 +242,11 @@ function MessageView({ message: m, onCite }: { message: Message; onCite: (s: Sou
 }
 
 function SetupNotice({ setup, onOpenSettings }: { setup: Settings; onOpenSettings: () => void }) {
-  if (setup.index.status === 'building')
+  const steps = [
+    !setup.chatgpt.connected && 'sign in with ChatGPT (Plus or Pro) for answers',
+    !setup.key_hint && setup.chatgpt.embeddings !== 'yes' && 'add an OpenRouter key for search',
+  ].filter(Boolean)
+  if (!steps.length && setup.index.status === 'building')
     return (
       <p role="status" className="mt-8 border-l-2 border-foreground pl-4">
         Building the GDPR index… this takes about a minute, then you can start asking.
@@ -228,9 +255,9 @@ function SetupNotice({ setup, onOpenSettings }: { setup: Settings; onOpenSetting
   return (
     <div className="mt-8 space-y-3 border-l-2 border-foreground pl-4">
       <p>
-        {setup.key_hint
-          ? 'The GDPR index needs to be built before you can ask questions.'
-          : 'One step left: add your OpenRouter API key. The GDPR index then builds automatically.'}
+        {steps.length
+          ? `To get started, ${steps.join(' and ')} in Settings.`
+          : 'The GDPR index needs to be built before you can ask questions.'}
       </p>
       <Button onClick={onOpenSettings}>Open Settings</Button>
     </div>

@@ -8,4 +8,5 @@ def no_real_indexing(monkeypatch):
 
     calls = []
     monkeypatch.setattr(ingest, "build", lambda db, models, log=print: calls.append(models) or 0)
+    monkeypatch.setattr(ingest, "embed_missing", lambda db, model: 0)
     return calls

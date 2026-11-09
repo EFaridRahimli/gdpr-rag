@@ -33,7 +33,8 @@ SCOPES = {"all": None, "gdpr": "c.source = 'gdpr'", "docs": "c.source like 'user
 
 def connect(path: Path) -> sqlite3.Connection:
     path.parent.mkdir(parents=True, exist_ok=True)
-    db = sqlite3.connect(path)
+    # a streaming response may resume on another worker thread; each request owns its connection
+    db = sqlite3.connect(path, check_same_thread=False)
     db.row_factory = sqlite3.Row
     db.enable_load_extension(True)
     sqlite_vec.load(db)
@@ -86,9 +87,20 @@ def set_vectors(db: sqlite3.Connection, model: str, ids: list[int], vectors) -> 
         )
 
 
+# question words that match nearly every chunk and only add noise to the reranker's candidates
+_STOPWORD_TEXT = (
+    "a an the is are was were be been being do does did can could should would may might must will "
+    "shall i me my you your we our us they them their it its he she his her what which who whom "
+    "when where why how of to in on at for from by with about as and or but if then than that this "
+    "these those there here have has had not no any all so too very just also into out up down over "
+    "under again more most some such only own same other each both few much many get got")
+STOPWORDS = frozenset(_STOPWORD_TEXT.split())
+
+
 def bm25(db: sqlite3.Connection, query: str, k: int, scope: str = "all") -> list[int]:
     # quote every word so user punctuation can't break FTS5 query syntax
     words = re.findall(r"\w+", query.lower())
+    words = [w for w in words if w not in STOPWORDS] or words
     if not words:
         return []
     match = " OR ".join(f'"{w}"' for w in words)
