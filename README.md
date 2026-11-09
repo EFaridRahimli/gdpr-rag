@@ -74,32 +74,9 @@ A question costs roughly $0.002 with the default models (estimated from OpenRout
 
 ## How it works
 
-```mermaid
-flowchart TB
-    subgraph ingest["Ingest"]
-        direction LR
-        G["GDPR XHTML<br/>EU Publications Office"] --> P["Parser<br/>669 paragraph + recital chunks"]
-        U["Your PDF / DOCX / MD"] --> H["Heading-aware<br/>chunker"]
-        P --> E["Embeddings<br/>gemini-embedding-2"]
-        H --> E
-        E --> DB[("SQLite<br/>FTS5 + sqlite-vec")]
-    end
-    subgraph retrieve["Retrieve"]
-        direction LR
-        Q["Question"] --> RW["Follow-up<br/>rewrite"]
-        RW --> BM["BM25<br/>top 30"]
-        RW --> VE["Vector<br/>top 30"]
-        BM --> RRF["Reciprocal<br/>rank fusion"]
-        VE --> RRF
-        RRF --> RR["LLM rerank<br/>top 6"]
-    end
-    subgraph generate["Generate"]
-        direction LR
-        A["Answer citing<br/>passages as cN"] --> CK["Citation check<br/>drops unknown tags"] --> UI["React UI<br/>streamed over SSE"]
-    end
-    ingest -- "indexed chunks" --> retrieve
-    retrieve -- "6 passages" --> generate
-```
+<p align="center"><img src="docs/architecture.png" width="760" alt="Architecture: ingest the GDPR and your documents into one SQLite file; retrieve with BM25 and vector search, reciprocal rank fusion and LLM reranking; generate a cited answer, check the citations and stream it to the React UI"></p>
+
+<sub>Diagram source: [`docs/architecture.mmd`](docs/architecture.mmd) (Mermaid).</sub>
 
 1. **Chunking.** The GDPR is parsed from the official Journal XHTML into one chunk per article
    paragraph (`Art. 6(1)`) and one per recital. Paragraphs over 350 words, such as the 26
