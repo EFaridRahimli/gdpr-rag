@@ -1,0 +1,6 @@
+{
+  "mode": "llm-rerank",
+  "embed_model": "google/gemini-embedding-2",
+  "recall@10": 1.0,
+  "mrr": 0.96
+}

@@ -1,0 +1,22 @@
+name: ci
+on: [push, pull_request]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync
+      - run: uv run ruff check .
+      - run: uv run pytest -q
+      - name: retrieval eval
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          if [ -z "$OPENROUTER_API_KEY" ]; then
+            echo "::notice::OPENROUTER_API_KEY secret not set (e.g. fork PR), skipping retrieval eval"
+            exit 0
+          fi
+          uv run gdpr-rag ingest
+          uv run gdpr-rag eval retrieval --check

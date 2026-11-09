@@ -1,0 +1,27 @@
+[project]
+name = "gdpr-rag"
+version = "0.1.0"
+description = "End-to-end RAG over the GDPR with a privacy-policy compliance checker"
+readme = "SPEC.md"
+license = "AGPL-3.0-or-later"
+requires-python = ">=3.11"
+dependencies = [
+    "openai>=1.60",
+    "sqlite-vec>=0.1.6",
+]
+
+[project.optional-dependencies]
+local-rerank = ["fastembed>=0.7"]  # only for the bake-off's local reranker contender
+
+[project.scripts]
+gdpr-rag = "gdpr_rag.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.8"]
+
+[build-system]
+requires = ["uv_build>=0.8,<0.14"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
