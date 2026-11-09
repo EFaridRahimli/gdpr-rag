@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 const MAX_BYTES = 20 * 1024 * 1024
 const kb = (n: number) => (n < 1024 * 1024 ? `${Math.max(1, Math.round(n / 1024))} KB` : `${(n / 1024 / 1024).toFixed(1)} MB`)
 
-export function DocumentsView() {
+export function DocumentsView({ onCheck }: { onCheck: (doc: Doc) => void }) {
   const [docs, setDocs] = useState<Doc[]>([])
   const [status, setStatus] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
@@ -102,9 +102,14 @@ export function DocumentsView() {
                     {d.chunks} passages · {kb(d.size)} · added {d.created_at.slice(0, 10)}
                   </p>
                 </div>
-                <Button variant="outline" size="sm" onClick={() => remove(d)} aria-label={`Delete ${d.name}`}>
-                  Delete
-                </Button>
+                <div className="flex shrink-0 gap-2">
+                  <Button size="sm" onClick={() => onCheck(d)}>
+                    Check compliance
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => remove(d)} aria-label={`Delete ${d.name}`}>
+                    Delete
+                  </Button>
+                </div>
               </li>
             ))}
           </ul>

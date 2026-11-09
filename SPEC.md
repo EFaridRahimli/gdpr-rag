@@ -66,7 +66,8 @@ Chat scope toggle: GDPR / My documents / Both (default Both); citations show sou
 
 - Input: an uploaded privacy policy.
 - Checklist: Art. 13/14 transparency items (~14): controller identity, DPO contact, purposes, legal basis, legitimate interests, recipients, international transfers, retention period, data subject rights, consent withdrawal, right to complain to a supervisory authority, statutory/contractual requirement, automated decision-making, source of data (Art. 14).
-- Per item: Covered / Partial / Missing, quoted evidence from the policy, GDPR article basis, one-line fix.
+- Per item: Covered / Partial / Missing / Not applicable (only when the policy itself says the case doesn't arise), quoted evidence from the policy, GDPR article basis, one-line fix.
+- Quotes are verified verbatim against the document; Covered/Partial without a verifiable quote is downgraded to Missing.
 - Export as Markdown.
 
 ## Evals
@@ -113,5 +114,5 @@ Each ends in a demoable state.
 3. FastAPI chat: streaming + validated citations → verify: answer eval runs locally. ✅
 4. React UI: chat, source panel, history, settings (incl. API key). ✅
 5. Uploads + scope toggle. ✅
-6. Compliance check + its eval.
+6. Compliance check + its eval. ✅
 7. README, GIF, diagram.

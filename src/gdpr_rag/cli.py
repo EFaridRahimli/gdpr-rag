@@ -17,7 +17,7 @@ def main() -> None:
     s.add_argument("--embed-model", default=llm.setting("EMBED_MODEL", llm.EMBED_MODEL))
     s.add_argument("-k", type=int, default=6)
     e = sub.add_parser("eval", help="golden set and retrieval metrics")
-    e.add_argument("what", choices=["generate", "retrieval", "answers"])
+    e.add_argument("what", choices=["generate", "retrieval", "answers", "compliance"])
     e.add_argument("--bakeoff", action="store_true", help="all embedding models x modes")
     e.add_argument("--check", action="store_true", help="fail below eval/baseline.json")
     v = sub.add_parser("serve", help="run the web app on localhost")
@@ -36,6 +36,9 @@ def main() -> None:
 
         if a.what == "generate":
             evals.generate(db)
+            return
+        if a.what == "compliance":
+            evals.compliance_eval()
             return
         if a.what == "answers":
             evals.answers(DATA / "gdpr.db")

@@ -28,10 +28,23 @@ export type RetrievalRow = {
   mrr: number
 }
 export type AnswerSummary = { answered: number; target_cited: number; faithful: number; citations_ok: number }
-export type Evals = { retrieval: RetrievalRow[] | null; answers: AnswerSummary | null }
+export type ComplianceSummary = { gaps_found: number; false_alarms: number; planted_gaps: number; covered_items: number }
+export type Evals = { retrieval: RetrievalRow[] | null; answers: AnswerSummary | null; compliance: ComplianceSummary | null }
 export type Done = { answer: string; citations: string[]; found: boolean }
 export type Scope = 'all' | 'gdpr' | 'docs'
 export type Doc = { id: number; name: string; size: number; chunks: number; created_at: string }
+export type Status = 'Covered' | 'Partial' | 'Missing' | 'Not applicable'
+export type ComplianceItem = {
+  id: string
+  title: string
+  article: string
+  status: Status
+  evidence: string[]
+  fix: string
+  note: string | null
+  source?: Source
+}
+export type Report = { doc_id: number; items: ComplianceItem[]; counts: Record<Status, number>; created_at: string }
 
 async function json<T>(r: Response): Promise<T> {
   if (!r.ok) {
@@ -60,6 +73,8 @@ export const api = {
     return fetch('/api/documents', { method: 'POST', body }).then(json<Doc>)
   },
   deleteDocument: (id: number) => fetch(`/api/documents/${id}`, { method: 'DELETE' }).then(json<void>),
+  compliance: (id: number) => fetch(`/api/documents/${id}/compliance`).then(json<Report>),
+  runCompliance: (id: number) => fetch(`/api/documents/${id}/compliance`, { method: 'POST' }).then(json<Report>),
 }
 
 type Handlers = {

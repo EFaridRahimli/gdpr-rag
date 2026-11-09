@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Menu, Plus, Trash2, X } from 'lucide-react'
 import { api, type ChatSummary, type Scope, type Source } from '@/api'
 import { ChatView } from '@/components/ChatView'
+import { ComplianceView } from '@/components/ComplianceView'
 import { DocumentsView } from '@/components/DocumentsView'
 import { EvalsView } from '@/components/EvalsView'
 import { SettingsView } from '@/components/SettingsView'
@@ -9,7 +10,10 @@ import { SourcePanel } from '@/components/SourcePanel'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-type View = { kind: 'chat'; id: number | null } | { kind: 'documents' } | { kind: 'settings' } | { kind: 'evals' }
+type View =
+  | { kind: 'chat'; id: number | null }
+  | { kind: 'compliance'; doc: { id: number; name: string } }
+  | { kind: 'documents' } | { kind: 'settings' } | { kind: 'evals' }
 const PAGES = { documents: 'Documents', evals: 'Evaluation', settings: 'Settings' } as const
 
 export default function App() {
@@ -97,7 +101,9 @@ export default function App() {
               aria-current={view.kind === kind ? 'page' : undefined}
               className={cn(
                 'block w-full cursor-pointer border-l-2 border-transparent px-3 py-2 text-left hover:bg-muted',
-                view.kind === kind ? 'border-foreground font-medium' : 'text-muted-foreground',
+                view.kind === kind || (kind === 'documents' && view.kind === 'compliance')
+                  ? 'border-foreground font-medium'
+                  : 'text-muted-foreground',
               )}
             >
               {PAGES[kind]}
@@ -119,7 +125,8 @@ export default function App() {
             onCite={setSource}
           />
         )}
-        {view.kind === 'documents' && <DocumentsView />}
+        {view.kind === 'documents' && <DocumentsView onCheck={(doc) => go({ kind: 'compliance', doc })} />}
+        {view.kind === 'compliance' && <ComplianceView doc={view.doc} onCite={setSource} />}
         {view.kind === 'settings' && <SettingsView />}
         {view.kind === 'evals' && <EvalsView />}
         {source && <SourcePanel source={source} onClose={closeSource} />}

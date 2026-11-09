@@ -180,3 +180,45 @@ def test_document_upload_list_delete(tmp_path, monkeypatch):
         assert store.bm25(db, "customer", 5, "docs") == []
         assert client.get("/api/documents").json() == []
         assert client.delete(f"/api/documents/{doc['id']}").status_code == 404
+
+
+def test_compliance_grounding_drops_invented_quotes():
+    from gdpr_rag.compliance import CHECKLIST, ground
+
+    policy = "## Retention\n\nWe keep **order data** for six years.\n\nContact privacy@acme.example."
+    items = ground([
+        {"id": "retention", "status": "Covered", "evidence": ["We keep order data for six years."]},
+        {"id": "rights", "status": "Covered", "evidence": ["You may access your data."], "fix": ""},
+        {"id": "controller", "status": "Partial", "evidence": ["Contact … acme.example."], "fix": "Add the name."},
+        {"id": "automated", "status": "Bogus"},
+    ], policy)
+    by_id = {i["id"]: i for i in items}
+    assert [i["id"] for i in items] == [c[0] for c in CHECKLIST]
+    assert by_id["retention"]["status"] == "Covered" and by_id["retention"]["fix"] == ""
+    assert by_id["rights"]["status"] == "Missing" and by_id["rights"]["evidence"] == []  # invented
+    assert by_id["controller"]["status"] == "Partial"  # ellipsis quote: both parts are in the text
+    assert by_id["automated"]["status"] == "Missing"
+    assert by_id["source"]["note"] == "Not assessed by the model."
+
+
+def test_compliance_endpoint_runs_stores_and_cascades(tmp_path, monkeypatch):
+    import json
+
+    from fastapi.testclient import TestClient
+
+    from gdpr_rag import llm, server
+
+    monkeypatch.setattr(server, "DB", tmp_path / "app.db")
+    monkeypatch.setattr(llm, "embed", lambda texts, model: [[1.0, 0.0] for _ in texts])
+    reply = {"items": [{"id": "retention", "status": "Covered",
+                        "evidence": ["We keep customer data for two years."]}]}
+    monkeypatch.setattr(llm, "chat", lambda messages, model, **kw: json.dumps(reply))
+    with TestClient(server.app) as client:
+        md = b"# Retention\n\nWe keep customer data for two years."
+        doc = client.post("/api/documents", files={"file": ("p.md", md)}).json()
+        assert client.get(f"/api/documents/{doc['id']}/compliance").status_code == 404
+        report = client.post(f"/api/documents/{doc['id']}/compliance").json()
+        assert report["counts"]["Covered"] == 1 and report["counts"]["Missing"] == 13
+        assert client.get(f"/api/documents/{doc['id']}/compliance").json()["items"] == report["items"]
+        client.delete(f"/api/documents/{doc['id']}")
+        assert client.get(f"/api/documents/{doc['id']}/compliance").status_code == 404

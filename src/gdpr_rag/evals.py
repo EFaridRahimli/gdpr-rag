@@ -204,3 +204,46 @@ def answers(db_path: Path) -> None:
     (out / "answers.md").write_text(table + "\n", encoding="utf-8")
     print(f"{n} questions, answers by {llm.setting('OPENROUTER_MODEL', llm.ANSWER_MODEL)},"
           f" judged by {judge_model}\n\n{table}")
+
+
+def compliance_eval() -> dict:
+    """Audit the synthetic policies and score planted gaps found vs covered items wrongly flagged."""
+    import tempfile
+
+    from . import compliance, docs
+
+    policies = EVAL_DIR / "policies"
+    truth = json.loads((policies / "truth.json").read_text(encoding="utf-8"))
+    rows, found, gaps, alarms, covered = [], 0, 0, 0, 0
+    with tempfile.TemporaryDirectory() as tmp:
+        db = store.connect(Path(tmp) / "policies.db")
+        for n, (name, expected) in enumerate(truth.items(), 1):
+            md = (policies / name).read_text(encoding="utf-8")
+            store.replace_source(db, f"user:{n}", docs.chunk_markdown(md, Path(name).stem))
+            report = compliance.check(db, n)
+            status = {i["id"]: i["status"] for i in report["items"]}
+            for item_id, want in expected.items():
+                flagged = status[item_id] in ("Missing", "Partial")
+                ok = flagged if want == "gap" else not flagged
+                gaps += want == "gap"
+                found += want == "gap" and flagged
+                covered += want == "covered"
+                alarms += want == "covered" and flagged
+                rows.append({"policy": name, "item": item_id, "expected": want,
+                             "status": status[item_id], "ok": ok})
+        db.close()
+    summary = {"gaps_found": found / gaps, "false_alarms": alarms / covered,
+               "planted_gaps": gaps, "covered_items": covered}
+    table = ("| planted gaps found | covered items wrongly flagged |\n|---|---|\n"
+             f"| {found}/{gaps} ({summary['gaps_found']:.2f}) | {alarms}/{covered}"
+             f" ({summary['false_alarms']:.2f}) |")
+    out = EVAL_DIR / "results"
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "compliance.json").write_text(json.dumps({"summary": summary, "items": rows}, indent=2),
+                                         encoding="utf-8")
+    (out / "compliance.md").write_text(table + "\n", encoding="utf-8")
+    misses = [r for r in rows if not r["ok"]]
+    print(f"{len(truth)} policies, model {llm.setting('OPENROUTER_MODEL', llm.ANSWER_MODEL)}\n\n{table}")
+    for r in misses:
+        print(f"  wrong: {r['policy']} {r['item']}: expected {r['expected']}, got {r['status']}")
+    return summary

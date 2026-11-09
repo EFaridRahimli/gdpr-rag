@@ -1,0 +1,234 @@
+{
+  "summary": {
+    "gaps_found": 1.0,
+    "false_alarms": 0.041666666666666664,
+    "planted_gaps": 8,
+    "covered_items": 24
+  },
+  "items": [
+    {
+      "policy": "brightside.md",
+      "item": "controller",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "brightside.md",
+      "item": "dpo",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "brightside.md",
+      "item": "purposes",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "brightside.md",
+      "item": "legal_basis",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "brightside.md",
+      "item": "recipients",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "brightside.md",
+      "item": "retention",
+      "expected": "covered",
+      "status": "Partial",
+      "ok": false
+    },
+    {
+      "policy": "brightside.md",
+      "item": "rights",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "brightside.md",
+      "item": "withdraw_consent",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "brightside.md",
+      "item": "requirement",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "brightside.md",
+      "item": "automated",
+      "expected": "covered",
+      "status": "Not applicable",
+      "ok": true
+    },
+    {
+      "policy": "brightside.md",
+      "item": "complaint",
+      "expected": "gap",
+      "status": "Missing",
+      "ok": true
+    },
+    {
+      "policy": "brightside.md",
+      "item": "transfers",
+      "expected": "gap",
+      "status": "Partial",
+      "ok": true
+    },
+    {
+      "policy": "nordwind.md",
+      "item": "controller",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "nordwind.md",
+      "item": "purposes",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "nordwind.md",
+      "item": "recipients",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "nordwind.md",
+      "item": "transfers",
+      "expected": "covered",
+      "status": "Not applicable",
+      "ok": true
+    },
+    {
+      "policy": "nordwind.md",
+      "item": "retention",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "nordwind.md",
+      "item": "complaint",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "nordwind.md",
+      "item": "legal_basis",
+      "expected": "gap",
+      "status": "Partial",
+      "ok": true
+    },
+    {
+      "policy": "nordwind.md",
+      "item": "rights",
+      "expected": "gap",
+      "status": "Missing",
+      "ok": true
+    },
+    {
+      "policy": "nordwind.md",
+      "item": "withdraw_consent",
+      "expected": "gap",
+      "status": "Partial",
+      "ok": true
+    },
+    {
+      "policy": "lumen.md",
+      "item": "controller",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "lumen.md",
+      "item": "dpo",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "lumen.md",
+      "item": "purposes",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "lumen.md",
+      "item": "legal_basis",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "lumen.md",
+      "item": "recipients",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "lumen.md",
+      "item": "retention",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "lumen.md",
+      "item": "rights",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "lumen.md",
+      "item": "complaint",
+      "expected": "covered",
+      "status": "Covered",
+      "ok": true
+    },
+    {
+      "policy": "lumen.md",
+      "item": "legitimate_interests",
+      "expected": "gap",
+      "status": "Partial",
+      "ok": true
+    },
+    {
+      "policy": "lumen.md",
+      "item": "automated",
+      "expected": "gap",
+      "status": "Partial",
+      "ok": true
+    },
+    {
+      "policy": "lumen.md",
+      "item": "source",
+      "expected": "gap",
+      "status": "Missing",
+      "ok": true
+    }
+  ]
+}

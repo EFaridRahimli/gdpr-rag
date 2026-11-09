@@ -22,6 +22,9 @@ create table if not exists messages(
 create table if not exists documents(
   id integer primary key, name text not null, size integer not null, chunks integer not null,
   created_at text default current_timestamp);
+create table if not exists compliance(
+  doc_id integer primary key references documents(id) on delete cascade, report text not null,
+  created_at text default current_timestamp);
 """
 
 # chat scope -> SQL filter on chunks c; user documents are stored as source "user:<document id>"

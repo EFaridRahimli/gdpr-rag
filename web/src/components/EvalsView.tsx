@@ -38,6 +38,22 @@ export function EvalsView() {
           </section>
         )}
 
+        {evals?.compliance && (
+          <section className="space-y-3">
+            <h2 className="font-medium">Compliance check</h2>
+            <Table
+              head={['Planted gaps found', 'Covered items wrongly flagged']}
+              rows={[[
+                `${Math.round(evals.compliance.gaps_found * evals.compliance.planted_gaps)} of ${evals.compliance.planted_gaps}`,
+                `${Math.round(evals.compliance.false_alarms * evals.compliance.covered_items)} of ${evals.compliance.covered_items}`,
+              ]]}
+            />
+            <p className="text-sm text-muted-foreground">
+              Three synthetic privacy policies with deliberately planted gaps against the Art. 13/14 checklist.
+            </p>
+          </section>
+        )}
+
         {evals?.retrieval && (
           <section className="space-y-3">
             <h2 className="font-medium">Retrieval</h2>

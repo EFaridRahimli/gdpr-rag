@@ -1,0 +1,40 @@
+{
+  "brightside.md": {
+    "controller": "covered",
+    "dpo": "covered",
+    "purposes": "covered",
+    "legal_basis": "covered",
+    "recipients": "covered",
+    "retention": "covered",
+    "rights": "covered",
+    "withdraw_consent": "covered",
+    "requirement": "covered",
+    "automated": "covered",
+    "complaint": "gap",
+    "transfers": "gap"
+  },
+  "nordwind.md": {
+    "controller": "covered",
+    "purposes": "covered",
+    "recipients": "covered",
+    "transfers": "covered",
+    "retention": "covered",
+    "complaint": "covered",
+    "legal_basis": "gap",
+    "rights": "gap",
+    "withdraw_consent": "gap"
+  },
+  "lumen.md": {
+    "controller": "covered",
+    "dpo": "covered",
+    "purposes": "covered",
+    "legal_basis": "covered",
+    "recipients": "covered",
+    "retention": "covered",
+    "rights": "covered",
+    "complaint": "covered",
+    "legitimate_interests": "gap",
+    "automated": "gap",
+    "source": "gap"
+  }
+}

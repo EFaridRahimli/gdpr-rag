@@ -10,7 +10,7 @@ from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import answer, docs, llm, retrieve, store
+from . import answer, compliance, docs, llm, retrieve, store
 
 DB = Path("data/gdpr.db")
 WEB = Path(__file__).resolve().parents[2] / "web" / "dist"
@@ -205,14 +205,46 @@ def delete_document(doc_id: int) -> None:
         db.close()
 
 
+@app.post("/api/documents/{doc_id}/compliance")
+def run_compliance(doc_id: int) -> dict:
+    """Audit a document against the Art. 13/14 checklist (one model call) and keep the report."""
+    db = _db()
+    try:
+        if db.execute("select 1 from documents where id = ?", (doc_id,)).fetchone() is None:
+            raise HTTPException(404, "document not found")
+        try:
+            report = compliance.check(db, doc_id)
+        except ValueError as e:
+            raise HTTPException(422, str(e)) from None
+        except Exception as e:  # noqa: BLE001 - key/network/provider errors, shown to the user
+            raise HTTPException(502, f"Compliance check failed: {e}") from None
+        compliance.save(db, report)
+        return compliance.load(db, doc_id)
+    finally:
+        db.close()
+
+
+@app.get("/api/documents/{doc_id}/compliance")
+def get_compliance(doc_id: int) -> dict:
+    db = _db()
+    try:
+        report = compliance.load(db, doc_id)
+        if report is None:
+            raise HTTPException(404, "no report yet")
+        return report
+    finally:
+        db.close()
+
+
 @app.get("/api/evals")
 def evals() -> dict:
     def load(name):
         p = EVAL_RESULTS / name
         return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
 
-    answers = load("answers.json")
-    return {"retrieval": load("retrieval.json"), "answers": answers and answers["summary"]}
+    answers, checks = load("answers.json"), load("compliance.json")
+    return {"retrieval": load("retrieval.json"), "answers": answers and answers["summary"],
+            "compliance": checks and checks["summary"]}
 
 
 if WEB.exists():  # built frontend; in development Vite serves it and proxies /api here
