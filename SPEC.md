@@ -27,7 +27,7 @@ Each user brings their own OpenRouter key. (Claude subscription tokens were reje
 | Reranker | LLM rerank of the 30 fused candidates with the fast model, `gpt-6-luna` (the local tiny cross-encoder scored far worse) |
 | Store | one SQLite file: sqlite-vec (vectors, one table per embedding model), FTS5 (BM25), app data (chats, documents, settings) |
 | PDF parsing | pymupdf4llm; DOCX via python-docx; MD/TXT direct |
-| Frontend | React + Vite + TypeScript, shadcn/ui (Radix + Tailwind) |
+| Frontend | React + Vite + TypeScript, Astryx design system (`@astryxdesign/core`, neutral theme, system fonts: its Google Fonts import is dropped to keep the app local) |
 
 Language: English only in v1.
 

@@ -1,9 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { Banner } from '@astryxdesign/core/Banner'
+import { Blockquote } from '@astryxdesign/core/Blockquote'
+import { Button } from '@astryxdesign/core/Button'
+import { Heading } from '@astryxdesign/core/Heading'
+import { HStack } from '@astryxdesign/core/HStack'
+import { List, ListItem } from '@astryxdesign/core/List'
+import { Text } from '@astryxdesign/core/Text'
+import { VStack } from '@astryxdesign/core/VStack'
 import { api, HttpError, type ComplianceItem, type Report, type Source, type Status } from '@/api'
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { Page } from '@/components/Page'
 
 const ORDER: Status[] = ['Missing', 'Partial', 'Covered', 'Not applicable']
+const isGap = (s: Status) => s === 'Missing' || s === 'Partial'
 
 function toMarkdown(name: string, report: Report) {
   const lines = [
@@ -77,91 +85,76 @@ export function ComplianceView({
   }
 
   return (
-    <div className="flex-1 overflow-y-auto">
-      <div className="mx-auto w-full max-w-2xl px-6 py-10">
-        <h1 className="text-2xl font-medium tracking-tight">Transparency check</h1>
-        <p className="mt-2 text-muted-foreground">
-          {doc.name} against the information GDPR Articles 13 and 14 require a privacy notice to give.
-        </p>
+    <Page
+      title="Transparency check"
+      description={`${doc.name} against the information GDPR Articles 13 and 14 require a privacy notice to give.`}
+    >
+      {busy && (
+        <Text as="p" role="status" color="secondary">
+          Checking 14 requirements… this takes about 15 seconds.
+        </Text>
+      )}
+      {error && !busy && (
+        <Banner
+          status="error"
+          title="Something went wrong"
+          description={error}
+          endContent={<Button label="Try again" size="sm" onClick={run} />}
+        />
+      )}
 
-        {busy && (
-          <p role="status" className="mt-10 text-muted-foreground">
-            Checking 14 requirements… this takes about 15 seconds.
-          </p>
-        )}
-        {error && !busy && (
-          <div className="mt-10 space-y-3">
-            <p className="border-l-2 border-foreground pl-4">Something went wrong: {error}</p>
-            <Button variant="outline" onClick={run}>
-              Try again
-            </Button>
-          </div>
-        )}
+      {report && !busy && (
+        <VStack gap={4}>
+          <HStack gap={4} wrap="wrap" hAlign="between" vAlign="center">
+            <Text>
+              {ORDER.filter((s) => report.counts[s])
+                .map((s) => `${report.counts[s]} ${s.toLowerCase()}`)
+                .join(' · ')}
+            </Text>
+            <HStack gap={2}>
+              <Button label="Export Markdown" size="sm" onClick={download} />
+              <Button label="Run again" variant="ghost" size="sm" onClick={run} />
+            </HStack>
+          </HStack>
 
-        {report && !busy && (
-          <>
-            <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-y py-4">
-              <p className="text-sm">
-                {ORDER.filter((s) => report.counts[s]).map((s, n) => (
-                  <span key={s}>
-                    {n > 0 && <span className="text-muted-foreground"> · </span>}
-                    <span className={s === 'Missing' || s === 'Partial' ? 'font-semibold' : ''}>{report.counts[s]}</span>{' '}
-                    {s.toLowerCase()}
-                  </span>
-                ))}
-              </p>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={download}>
-                  Export Markdown
-                </Button>
-                <Button variant="ghost" size="sm" onClick={run}>
-                  Run again
-                </Button>
-              </div>
-            </div>
-
-            <ol className="divide-y">
-              {sorted(report.items).map((i) => (
-                <li key={i.id} className="py-6">
-                  <div className="flex items-baseline justify-between gap-6">
-                    <h2 className="font-medium">{i.title}</h2>
-                    <span
-                      className={cn(
-                        'shrink-0 text-xs tracking-wide uppercase',
-                        i.status === 'Missing' || i.status === 'Partial' ? 'font-semibold' : 'text-muted-foreground',
-                      )}
-                    >
-                      {i.status}
-                    </span>
-                  </div>
-                  {i.source ? (
-                    <button
-                      type="button"
-                      onClick={() => onCite(i.source!)}
-                      className="mt-1 cursor-pointer text-sm text-muted-foreground underline decoration-[#6e6e73] underline-offset-4 hover:text-foreground"
-                    >
-                      {i.article}
-                    </button>
-                  ) : (
-                    <p className="mt-1 text-sm text-muted-foreground">{i.article}</p>
-                  )}
-                  {i.evidence.map((q) => (
-                    <blockquote key={q} className="mt-3 border-l pl-4 text-[15px] leading-7 text-muted-foreground">
-                      {q}
-                    </blockquote>
-                  ))}
-                  {i.fix && <p className="mt-3 text-[15px] leading-7">Fix: {i.fix}</p>}
-                  {i.note && <p className="mt-2 text-sm text-muted-foreground">{i.note}</p>}
-                </li>
-              ))}
-            </ol>
-            <p className="mt-6 text-xs text-muted-foreground">
-              Checked {report.created_at.slice(0, 16).replace('T', ' ')}. Quotes are verified against the document;
-              statuses are a model's judgement. Not legal advice.
-            </p>
-          </>
-        )}
-      </div>
-    </div>
+          <List hasDividers edge="flush">
+            {sorted(report.items).map((i) => (
+              <ListItem
+                key={i.id}
+                align="start"
+                label={
+                  <Heading level={4} accessibilityLevel={2}>
+                    {i.title}
+                  </Heading>
+                }
+                endContent={
+                  <Text weight={isGap(i.status) ? 'semibold' : undefined} color={isGap(i.status) ? 'primary' : 'secondary'}>
+                    {i.status}
+                  </Text>
+                }
+                description={
+                  <VStack gap={3} hAlign="start">
+                    {i.source ? (
+                      <Button label={i.article} variant="ghost" size="sm" onClick={() => onCite(i.source!)} />
+                    ) : (
+                      <Text type="supporting">{i.article}</Text>
+                    )}
+                    {i.evidence.map((q) => (
+                      <Blockquote key={q}>{q}</Blockquote>
+                    ))}
+                    {i.fix && <Text as="p">Fix: {i.fix}</Text>}
+                    {i.note && <Text type="supporting">{i.note}</Text>}
+                  </VStack>
+                }
+              />
+            ))}
+          </List>
+          <Text type="supporting">
+            Checked {report.created_at.slice(0, 16).replace('T', ' ')}. Quotes are verified against the document;
+            statuses are a model's judgement. Not legal advice.
+          </Text>
+        </VStack>
+      )}
+    </Page>
   )
 }

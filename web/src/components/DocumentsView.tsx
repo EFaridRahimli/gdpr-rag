@@ -1,6 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { Button } from '@astryxdesign/core/Button'
+import { FileInput } from '@astryxdesign/core/FileInput'
+import { HStack } from '@astryxdesign/core/HStack'
+import { List, ListItem } from '@astryxdesign/core/List'
+import { Text } from '@astryxdesign/core/Text'
 import { api, type Doc } from '@/api'
-import { Button } from '@/components/ui/button'
+import { Page } from '@/components/Page'
 
 const MAX_BYTES = 20 * 1024 * 1024
 const kb = (n: number) => (n < 1024 * 1024 ? `${Math.max(1, Math.round(n / 1024))} KB` : `${(n / 1024 / 1024).toFixed(1)} MB`)
@@ -9,8 +14,6 @@ export function DocumentsView({ onCheck }: { onCheck: (doc: Doc) => void }) {
   const [docs, setDocs] = useState<Doc[]>([])
   const [status, setStatus] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
-  const [dragging, setDragging] = useState(false)
-  const input = useRef<HTMLInputElement>(null)
 
   const refresh = () => {
     api.documents().then(setDocs).catch((e: Error) => setStatus(`Could not load documents: ${e.message}`))
@@ -19,8 +22,8 @@ export function DocumentsView({ onCheck }: { onCheck: (doc: Doc) => void }) {
     refresh()
   }, [])
 
-  async function upload(files: FileList | null) {
-    const file = files?.[0]
+  async function upload(files: File | File[] | null) {
+    const file = Array.isArray(files) ? files[0] : files
     if (!file || busy) return // one upload at a time (a drop can arrive mid-upload)
     if (file.size > MAX_BYTES) return setStatus(`${file.name} is larger than 20 MB.`)
     setBusy(true)
@@ -33,7 +36,6 @@ export function DocumentsView({ onCheck }: { onCheck: (doc: Doc) => void }) {
       setStatus(`${file.name}: ${(e as Error).message}`)
     } finally {
       setBusy(false)
-      if (input.current) input.current.value = ''
     }
   }
 
@@ -48,73 +50,45 @@ export function DocumentsView({ onCheck }: { onCheck: (doc: Doc) => void }) {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto">
-      <div className="mx-auto w-full max-w-2xl space-y-10 px-6 py-10">
-        <div>
-          <h1 className="text-2xl font-medium tracking-tight">Documents</h1>
-          <p className="mt-2 text-muted-foreground">
-            Add your own documents, such as a privacy policy, and ask about them alongside the GDPR.
-          </p>
-        </div>
+    <Page
+      title="Documents"
+      description="Add your own documents, such as a privacy policy, and ask about them alongside the GDPR."
+    >
+      <FileInput
+        label="Upload a document"
+        mode="dropzone"
+        value={null} // each pick uploads at once; the list below shows what's stored
+        onChange={upload}
+        accept=".pdf,.docx,.md,.txt"
+        isLoading={busy}
+        isDisabled={busy}
+        placeholder={busy ? 'Indexing…' : 'Choose a file or drop it here'}
+        description="PDF with selectable text, DOCX, Markdown or plain text, up to 20 MB. The text is sent to OpenRouter to be embedded and, when relevant, to answer questions."
+      />
 
-        <div
-          onDragOver={(e) => {
-            e.preventDefault()
-            setDragging(true)
-          }}
-          onDragLeave={() => setDragging(false)}
-          onDrop={(e) => {
-            e.preventDefault()
-            setDragging(false)
-            upload(e.dataTransfer.files)
-          }}
-          className={`border px-6 py-8 ${dragging ? 'border-foreground bg-muted' : ''}`}
-        >
-          <input
-            ref={input}
-            type="file"
-            accept=".pdf,.docx,.md,.txt"
-            className="sr-only"
-            id="upload"
-            onChange={(e) => upload(e.target.files)}
-            disabled={busy}
-          />
-          <Button onClick={() => input.current?.click()} disabled={busy}>
-            {busy ? 'Indexing…' : 'Upload a document'}
-          </Button>
-          <p className="mt-3 text-sm text-muted-foreground">
-            Or drop a file here. PDF with selectable text, DOCX, Markdown or plain text, up to 20 MB.
-            The text is sent to OpenRouter to be embedded and, when relevant, to answer questions.
-          </p>
-        </div>
+      <Text as="p" role="status">
+        {status}
+      </Text>
 
-        <p role="status" className="min-h-6 text-sm">
-          {status}
-        </p>
-
-        {docs.length > 0 && (
-          <ul className="border-t">
-            {docs.map((d) => (
-              <li key={d.id} className="flex items-center justify-between gap-4 border-b py-3">
-                <div className="min-w-0">
-                  <p className="truncate">{d.name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {d.chunks} passages · {kb(d.size)} · added {d.created_at.slice(0, 10)}
-                  </p>
-                </div>
-                <div className="flex shrink-0 gap-2">
-                  <Button size="sm" onClick={() => onCheck(d)}>
-                    Check compliance
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => remove(d)} aria-label={`Delete ${d.name}`}>
+      {docs.length > 0 && (
+        <List hasDividers edge="flush">
+          {docs.map((d) => (
+            <ListItem
+              key={d.id}
+              label={d.name}
+              description={`${d.chunks} passages · ${kb(d.size)} · added ${d.created_at.slice(0, 10)}`}
+              endContent={
+                <HStack gap={2}>
+                  <Button label="Check compliance" variant="primary" size="sm" onClick={() => onCheck(d)} />
+                  <Button label={`Delete ${d.name}`} size="sm" onClick={() => remove(d)}>
                     Delete
                   </Button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </div>
+                </HStack>
+              }
+            />
+          ))}
+        </List>
+      )}
+    </Page>
   )
 }

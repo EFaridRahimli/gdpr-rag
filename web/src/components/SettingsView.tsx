@@ -1,8 +1,15 @@
 import { useEffect, useState } from 'react'
+import { Button } from '@astryxdesign/core/Button'
+import { Grid } from '@astryxdesign/core/Grid'
+import { Heading } from '@astryxdesign/core/Heading'
+import { HStack } from '@astryxdesign/core/HStack'
+import { Selector } from '@astryxdesign/core/Selector'
+import { StackItem } from '@astryxdesign/core/Stack'
+import { Text } from '@astryxdesign/core/Text'
+import { TextInput } from '@astryxdesign/core/TextInput'
+import { VStack } from '@astryxdesign/core/VStack'
 import { api, type IndexStatus, type PlanModel, type Settings } from '@/api'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Page } from '@/components/Page'
 
 const INDEX_TEXT: Record<IndexStatus['status'], string> = {
   missing: 'The GDPR index builds automatically once a key is saved.',
@@ -10,8 +17,6 @@ const INDEX_TEXT: Record<IndexStatus['status'], string> = {
   ready: 'GDPR index ready.',
   error: 'Building the GDPR index failed.',
 }
-const SELECT =
-  'h-9 w-full border border-input bg-background px-3 text-sm focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none'
 
 export function SettingsView({
   settings,
@@ -72,6 +77,10 @@ export function SettingsView({
     }
   }
 
+  const saveKey = () => {
+    if (key.trim() && !saving) run(() => api.saveSettings({ api_key: key }), 'Key saved.')
+  }
+  const options = planModels.map((m) => ({ value: m.slug, label: m.name }))
   const planEmbeds = settings?.chatgpt.embeddings === 'yes'
   const keyOptional = signedIn && planEmbeds
   const keyText = !settings?.key_hint
@@ -81,133 +90,98 @@ export function SettingsView({
     : `Using ${settings.key_hint}, ${settings.key_source === 'settings' ? 'saved here' : 'from .env'}.`
 
   return (
-    <div className="flex-1 overflow-y-auto">
-      <div className="mx-auto w-full max-w-xl space-y-12 px-6 py-10">
-        <h1 className="text-2xl font-medium tracking-tight">Settings</h1>
-
-        <section className="space-y-3" aria-labelledby="chatgpt-heading">
-          <h2 id="chatgpt-heading" className="text-sm font-medium">
-            ChatGPT plan
-          </h2>
-          {!signedIn ? (
-            <>
-              <p className="text-sm text-muted-foreground">
-                Required: answers and compliance checks run on your ChatGPT Plus or Pro plan. Signing in
-                happens on OpenAI’s site; this app never sees your password.
-              </p>
-              <Button onClick={signIn} disabled={saving}>
-                Sign in with ChatGPT
-              </Button>
-            </>
-          ) : (
-            <>
-              <p className="text-sm text-muted-foreground">
-                Signed in as {settings?.chatgpt.email ?? 'your ChatGPT account'}. Questions and compliance
-                checks use your plan.{' '}
-                {planEmbeds
-                  ? 'Search runs on your plan too, so no API key is needed.'
-                  : 'Search still needs an OpenRouter key (below).'}
-              </p>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="space-y-1">
-                  <Label htmlFor="plan-model">Answer model</Label>
-                  <select
-                    id="plan-model"
-                    className={SELECT}
-                    value={settings?.model}
-                    disabled={saving || !planModels.length}
-                    onChange={(e) => run(() => api.saveSettings({ model: e.target.value }), 'Answer model saved.')}
-                  >
-                    {planModels.map((m) => (
-                      <option key={m.slug} value={m.slug}>
-                        {m.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="fast-model">Fast model (search ranking, follow-ups)</Label>
-                  <select
-                    id="fast-model"
-                    className={SELECT}
-                    value={settings?.fast_model}
-                    disabled={saving || !planModels.length}
-                    onChange={(e) =>
-                      run(() => api.saveSettings({ fast_model: e.target.value }), 'Fast model saved.')
-                    }
-                  >
-                    {planModels.map((m) => (
-                      <option key={m.slug} value={m.slug}>
-                        {m.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <Button
-                variant="link"
-                className="h-auto px-0 text-muted-foreground"
-                disabled={saving}
-                onClick={() => run(api.chatgptSignOut, 'Signed out of ChatGPT.')}
-              >
-                Sign out of ChatGPT
-              </Button>
-            </>
-          )}
-        </section>
-
-        <form
-          className="space-y-3"
-          onSubmit={(e) => {
-            e.preventDefault()
-            run(() => api.saveSettings({ api_key: key }), 'Key saved.')
-          }}
-        >
-          <Label htmlFor="key">OpenRouter API key, for search{keyOptional ? ' (optional)' : ''}</Label>
-          <p className="text-sm text-muted-foreground">
-            {keyText} The key stays on this computer and is only sent to OpenRouter.
-          </p>
-          {settings && (
-            <p role="status" className="text-sm">
-              {INDEX_TEXT[settings.index.status]}
-              {settings.index.error && <span className="text-muted-foreground"> {settings.index.error}</span>}
-              {settings.index.status === 'error' && (
-                <Button type="button" variant="link" className="h-auto px-1" onClick={retryIndex}>
-                  Try again
-                </Button>
-              )}
-            </p>
-          )}
-          <div className="flex gap-2">
-            <Input
-              id="key"
-              type="password"
-              autoComplete="off"
-              value={key}
-              onChange={(e) => setKey(e.target.value)}
-              placeholder="sk-or-v1-…"
-              className="shadow-none focus-visible:ring-1 focus-visible:ring-ring"
-            />
-            <Button type="submit" disabled={saving || !key.trim()}>
-              Save
-            </Button>
-          </div>
-          {settings?.key_source === 'settings' && (
+    <Page title="Settings" width={600}>
+      <VStack gap={3} as="section" hAlign="start">
+        <Heading level={2}>ChatGPT plan</Heading>
+        {!signedIn ? (
+          <>
+            <Text as="p" color="secondary">
+              Required: answers and compliance checks run on your ChatGPT Plus or Pro plan. Signing in happens on
+              OpenAI’s site; this app never sees your password.
+            </Text>
+            <Button label="Sign in with ChatGPT" variant="primary" onClick={signIn} isDisabled={saving} />
+          </>
+        ) : (
+          <>
+            <Text as="p" color="secondary">
+              Signed in as {settings?.chatgpt.email ?? 'your ChatGPT account'}. Questions and compliance checks use
+              your plan.{' '}
+              {planEmbeds
+                ? 'Search runs on your plan too, so no API key is needed.'
+                : 'Search still needs an OpenRouter key (below).'}
+            </Text>
+            <Grid columns={{ minWidth: 240 }} gap={3} width="100%">
+              <Selector
+                label="Answer model"
+                options={options}
+                value={settings?.model}
+                isDisabled={saving || !options.length}
+                onChange={(v) => run(() => api.saveSettings({ model: v }), 'Answer model saved.')}
+                width="100%"
+              />
+              <Selector
+                label="Fast model (search ranking, follow-ups)"
+                options={options}
+                value={settings?.fast_model}
+                isDisabled={saving || !options.length}
+                onChange={(v) => run(() => api.saveSettings({ fast_model: v }), 'Fast model saved.')}
+                width="100%"
+              />
+            </Grid>
             <Button
-              type="button"
-              variant="link"
-              className="h-auto px-0 text-muted-foreground"
-              onClick={() => run(() => api.saveSettings({ api_key: '' }), 'Saved key removed.')}
-            >
-              Remove saved key
-            </Button>
-          )}
-        </form>
+              label="Sign out of ChatGPT"
+              variant="ghost"
+              isDisabled={saving}
+              onClick={() => run(api.chatgptSignOut, 'Signed out of ChatGPT.')}
+            />
+          </>
+        )}
+      </VStack>
 
-        <p role="status" className="min-h-6 text-sm">
-          {status}
-        </p>
-      </div>
-    </div>
+      <VStack gap={3} as="section" hAlign="start">
+        <Heading level={2}>Search</Heading>
+        {settings && (
+          <HStack gap={2} vAlign="center" wrap="wrap">
+            <Text role="status">
+              {INDEX_TEXT[settings.index.status]}
+              {settings.index.error && ` ${settings.index.error}`}
+            </Text>
+            {settings.index.status === 'error' && (
+              <Button label="Try again" variant="ghost" size="sm" onClick={retryIndex} />
+            )}
+          </HStack>
+        )}
+        <HStack gap={2} vAlign="end" width="100%">
+          <StackItem size="fill">
+          <TextInput
+            label={`OpenRouter API key${keyOptional ? '' : ', for search'}`}
+            isOptional={keyOptional}
+            description={`${keyText} The key stays on this computer and is only sent to OpenRouter.`}
+            type="password"
+            autoComplete="off"
+            value={key}
+            onChange={setKey}
+            onEnter={saveKey}
+            placeholder="sk-or-v1-…"
+            width="100%"
+          />
+          </StackItem>
+          <StackItem>
+            <Button label="Save" variant="primary" isDisabled={saving || !key.trim()} onClick={saveKey} />
+          </StackItem>
+        </HStack>
+        {settings?.key_source === 'settings' && (
+          <Button
+            label="Remove saved key"
+            variant="ghost"
+            onClick={() => run(() => api.saveSettings({ api_key: '' }), 'Saved key removed.')}
+          />
+        )}
+      </VStack>
+
+      <Text as="p" role="status">
+        {status}
+      </Text>
+    </Page>
   )
 }

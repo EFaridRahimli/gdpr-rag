@@ -243,7 +243,7 @@ npm run lint && npm run build          # lint, typecheck and rebuild web/dist (c
 | `src/gdpr_rag/compliance.py` | Article 13/14 checklist and quote verification |
 | `src/gdpr_rag/evals.py` | Question generation and all evals |
 | `src/gdpr_rag/server.py` | FastAPI app: streaming chat, documents, reports, settings, security middleware |
-| `web/src/` | React + TypeScript UI (shadcn/ui on Radix) |
+| `web/src/` | React + TypeScript UI ([Astryx](https://www.npmjs.com/package/@astryxdesign/core) components, neutral theme) |
 
 Settings saved in the app win; otherwise they come from the environment: `OPENROUTER_MODEL`
 (answers, default `gpt-6.1-sol`; a `vendor/model` id uses OpenRouter instead), `FAST_MODEL`
